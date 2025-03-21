@@ -1,0 +1,317 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary-color: #78B3CE;
+    --background-color : #fafafa;
+    --background-secondary: #e4faff;
+    --secondary-color: #548590;
+    --text-dark: black;
+    --text-dark-secondary: #313131;
+    --text-white: white;
+    --text-white-secondary: #fff0f0;
+    --accent: #F96E2A;
+}
+
+body {
+    background: #ffffff;
+}
+
+/*! Hero Section  */
+
+#hero {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    max-height: 100%;
+    max-width: 100vw;
+    padding: 15px 50px 0;
+    margin-bottom: 20px;
+}
+
+#map {
+    height: 100vh;
+    width: 50%; 
+    margin-right: 36px;
+}
+
+#windy {
+    height: 100%;
+    width: 100%;
+}
+
+/*! Weather Data  */
+
+#data-box {
+    width: 50%;
+    display: grid;
+    grid-template-columns: 135px 135px 135px 135px;
+    grid-template-rows: 60px 60px 150px 120px 120px 100px;
+    gap: 20px 36px;
+    color: var(--text-white);
+    font-family: "Roboto", serif;
+}
+
+hr {
+    background-color: var(--primary-color);
+    height: 1px;
+}
+
+/*? common for all data boxes  */
+
+.data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--primary-color);
+    border-radius: 25px;
+    padding-top: 15px;
+}
+
+.data p {
+    font-size: 0.9rem;
+    color: var(--text-white-secondary);
+}
+
+.data h3 {
+    font-size: 1.75rem;
+    color: var(--text-white);
+    margin-top: 15px;
+}
+
+/* Input form  */
+
+#data-box form {
+    grid-row: 1/2;
+    grid-column: 1/-1;
+}
+
+#data-box form {
+    max-width: 100%;
+    position: relative;
+}
+
+#data-box form input{
+    width: 100%;
+    height: 50px;
+    border-radius: 36px;
+    background-color: var(--background-secondary);
+    border: none;
+    color: #686868 !important;
+    padding-left: 30px;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+#data-box form input::placeholder {
+    font-weight: 500;
+}
+
+#data-box form input:focus-visible {
+    outline: none !important;
+}
+
+#data-box form button {
+    width: 60px;
+    height: 50px;
+    border-radius: 36px;
+    border: none;
+    background-color:var(--primary-color);
+    position: absolute;
+    right: 0;
+    top: 0;
+    align-content: center;
+}
+
+#data-box form button img {
+    height: 25px;
+}
+
+/* City name Box  */
+
+#data-box .city-name {
+    grid-row: 2/3;
+    grid-column: 1/-1;
+}
+
+.city-name h1 {
+    color: var(--text-dark);
+    font-size: 40px;
+}
+
+/* Weathr Icon box  */
+
+#data-box .weather {
+    grid-row: 3/4;
+    grid-column: 1/2;
+}
+
+#data-box .weather img {
+    height: 75px;
+}
+
+#data-box .weather h3 {
+    margin: 0 !important;
+}
+
+/* ocean info box  */
+
+#data-box .ocean-info {
+    grid-row: 3/4;
+    grid-column: 3/5;
+    background-color: var(--accent) !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.ocean-info p {
+    margin-bottom: 15px;
+}
+
+.ocean-info .ocean-data {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    text-align: center;
+    width: 100%;
+}
+
+.ocean-data h5 {
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.ocean-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.ocean-item h4 {
+    font-size: 1.25rem;
+}
+
+/*! ALERT BOX  */
+
+#data-box .alert {
+    grid-column: 2/3;
+    grid-row: 3/4;
+}
+
+.alert h3 {
+    width: 80%;
+    text-wrap: wrap;
+    text-align: center;
+}
+
+/* AQI box  */
+
+#data-box .aqi {
+    grid-column: 4/5;
+    grid-row: 4/5;
+    background:  none !important;
+    border: 2px solid var(--primary-color);
+}
+
+#data-box .aqi p {
+    color: var(--text-dark-secondary);
+}
+
+#data-box .aqi h3 {
+    color: var(--text-dark);
+}
+
+#data-box .aqi h4 {
+    color: #2e2e2e;
+    font-weight: 400;
+}
+
+/* Temp Box  */
+
+#data-box .temp {
+    grid-row: 4/5;
+    grid-column: 1/2;
+}
+
+/* feels like Box  */
+#data-box .feels {
+    grid-row: 4/5;
+    grid-column: 2/3;
+}
+
+/* Wind Box  */
+
+#data-box .wind {
+    grid-row: 4/5;
+    grid-column: 3/4;
+}
+
+/* uv index  */
+
+#data-box .uvi {
+    grid-row: 5/6;
+    grid-column: 4/-1;
+}
+
+/* Pressure Box  */
+
+#data-box .visibility {
+
+}
+
+/* humid box  */
+
+#data-box .humid {
+    grid-row: 5/6;
+    grid-column: 3/4;
+}
+
+
+
+/* Description Box  */
+
+#data-box .desc {
+    grid-row: 6/7;
+    grid-column: 1/-1;
+    background-color: var(--background-secondary);
+}
+
+#data-box .desc p {
+    color: #6e6e6e;
+}
+
+#data-box .desc h3 {
+    color: var(--text-dark);
+}
+
+/*! Residual Data  */
+
+.res-data {
+    height: 0;
+    width: 0;
+    z-index: -999;
+}
+
+
+/*! About Section  */
+
+#beach-info {
+    height: 100vh;
+    width: 100%;
+    background-color: var(--primary-color);
+    font-family: "Roboto", serif;
+}
+
+#beach-info h2 {
+    text-align: center;
+    color: var(--text-white);
+    font-size: 2.5rem;
+    padding-top: 50px;
+}
+
