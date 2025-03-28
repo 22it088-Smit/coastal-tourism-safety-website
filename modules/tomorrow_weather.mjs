@@ -2,7 +2,7 @@ import axios from "axios";
 import env from "dotenv";
 env.config();
 
-import weather_data from "../server.js";
+import { weather_data } from "../server.js";
 
 const TOMORROW_API = process.env.TOMORROW_API
 

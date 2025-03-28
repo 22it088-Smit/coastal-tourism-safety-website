@@ -6,7 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "docker:build": "docker build -t weather-app .",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
   },
   "author": "",
   "license": "ISC",
@@ -14,11 +18,15 @@
   "dependencies": {
     "@esri/arcgis-rest-request": "^4.2.3",
     "@google/generative-ai": "^0.21.0",
-    "axios": "^1.7.7",
+    "axios": "^1.8.4",
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
-    "openmeteo": "^1.1.4"
+    "express-session": "^1.18.1",
+    "mongoose": "^8.13.0",
+    "openmeteo": "^1.1.4",
+    "stripe": "^17.7.0"
   }
 }

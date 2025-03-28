@@ -2,11 +2,13 @@ import axios from "axios";
 import env from "dotenv";
 env.config();
 
-import weather_data from "../server.js";
+import { weather_data } from "../server.js";
 
 const OWM = process.env.OWM_API;
 
-async function weather_owm(lat,lon) {
+export async function weather_owm(lat, lon, weather_data) 
+    
+ {
     // console.log(lat,lon);
     try {
        const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${OWM}`);
@@ -24,4 +26,3 @@ async function weather_owm(lat,lon) {
     }
 }
 
-export default weather_owm;

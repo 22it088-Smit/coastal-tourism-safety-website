@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Beach Hotels</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                        url('/images/beach-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            color: white;
+        }
+
+        .nav-links {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px 20px 20px;
+        }
+
+        .search-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+
+        .hotels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .hotel-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .hotel-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .hotel-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .hotel-name {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .hotel-info {
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        .hotel-rating {
+            color: gold;
+            margin-bottom: 10px;
+        }
+
+        .book-btn {
+            background: #64b5f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .book-btn:hover {
+            background: #2196f3;
+        }
+
+        .error-message {
+            background: rgba(255, 87, 87, 0.2);
+            color: #ff5757;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .search-box form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-btn {
+            background: #64b5f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #2196f3;
+        }
+
+        #hotels-list {
+            margin-top: 30px;
+        }
+
+        .hotel-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .hotel-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/login">Login</a>
+    </div>
+
+    <div class="container">
+        <div class="search-section">
+            <h1>Find Beach Hotels</h1>
+            <% if (beach) { %>
+                <h2>Hotels near <%= beach %></h2>
+            <% } %>
+            <div class="search-box">
+                <form onsubmit="searchHotels(event)">
+                    <input type="text" id="location-search" placeholder="Search for a beach location..." value="<%= beach || '' %>">
+                    <button type="submit" class="search-btn">Search</button>
+                </form>
+            </div>
+        </div>
+
+        <% if (error) { %>
+            <div class="error-message">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <div class="hotels-grid" id="hotels-list">
+            <% if (!lat || !lon) { %>
+                <p>Please search for a beach location to find nearby hotels.</p>
+            <% } %>
+        </div>
+    </div>
+
+    <script>
+        async function searchHotels(event) {
+            event.preventDefault();
+            const query = document.getElementById('location-search').value;
+            
+            try {
+                // First, get coordinates for the location
+                const geocodeResponse = await fetch(`https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(query)}&apiKey=<%= process.env.GEOAPIFY_API_KEY %>`);
+                const geocodeData = await geocodeResponse.json();
+                
+                if (geocodeData.features && geocodeData.features.length > 0) {
+                    const location = geocodeData.features[0];
+                    const lat = location.properties.lat;
+                    const lon = location.properties.lon;
+                    
+                    // Now fetch hotels using these coordinates
+                    const hotelsResponse = await fetch(`/hotels/${lat}/${lon}`);
+                    const hotels = await hotelsResponse.json();
+                    
+                    // Display hotels
+                    const hotelsList = document.getElementById('hotels-list');
+                    if (hotels.length === 0) {
+                        hotelsList.innerHTML = '<p>No hotels found in this area.</p>';
+                        return;
+                    }
+
+                    hotelsList.innerHTML = hotels.map(hotel => `
+                        <div class="hotel-card">
+                            <img src="https://maps.geoapify.com/v1/staticmap?style=osm-carto&width=400&height=200&center=lonlat:${hotel.coordinates[0]},${hotel.coordinates[1]}&zoom=15&marker=lonlat:${hotel.coordinates[0]},${hotel.coordinates[1]}&apiKey=<%= process.env.GEOAPIFY_API_KEY %>"
+                                 class="hotel-image" alt="${hotel.name}">
+                            <h3 class="hotel-name">${hotel.name}</h3>
+                            <div class="hotel-info">
+                                <p>${hotel.address}</p>
+                                <p>Distance: ${(hotel.distance / 1000).toFixed(2)} km</p>
+                            </div>
+                            <button class="book-btn" onclick="showBookingForm('${hotel._id}')">
+                                Book Now
+                            </button>
+                        </div>
+                    `).join('');
+
+                    console.log('Hotels loaded:', hotels); // Debug log
+                } else {
+                    document.getElementById('hotels-list').innerHTML = '<p>Location not found. Please try another search.</p>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('hotels-list').innerHTML = '<p>Error searching for hotels. Please try again.</p>';
+            }
+        }
+
+        // Add loading indicator
+        function showLoading() {
+            document.getElementById('hotels-list').innerHTML = '<p>Searching for hotels...</p>';
+        }
+    </script>
+</body>
+</html>

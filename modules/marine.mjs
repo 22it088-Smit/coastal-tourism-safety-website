@@ -2,7 +2,7 @@ import axios from "axios";
 import env from "dotenv";
 env.config();
 
-import weather_data from "../server.js";
+import { weather_data } from "../server.js";
 
 async function marine(lat,lon) {
     try {
