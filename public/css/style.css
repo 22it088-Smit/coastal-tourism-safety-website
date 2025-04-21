@@ -1,6 +1,7 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 :root {
@@ -16,8 +17,42 @@
 }
 
 body {
+  font-family: 'Poppins', sans-serif; /* Clean and friendly font */
+  color: #333;
+  line-height: 1.6;
+  background-color: #f4f7f6; /* Light base background */
   height: 100vh;
   width: 100%;
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  color: #0a4f6e; /* Dark Teal/Blue */
+}
+
+p {
+  color: #555;
+}
+
+a {
+  text-decoration: none;
+  color: #007bff; /* Standard link blue */
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #0056b3;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+section {
+  padding: 60px 0;
 }
 
 /*! Hero pgae */
@@ -26,7 +61,7 @@ body {
   height: 100vh;
   width: 100%;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url(/assets/pics/alaphhuzza,kerala.jpg) center center;
+    url(https://images.pexels.com/photos/29547310/pexels-photo-29547310/free-photo-of-serene-beach-view-at-puri-odisha.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)center center;
   background-size: cover;
 }
 
@@ -246,4 +281,625 @@ button:hover {
 .error {
     color: red;
     margin-bottom: 10px;
+}
+
+/* --- Navigation --- */
+.navbar {
+    background: transparent; /* Remove blue gradient */
+    color: #fff;
+    padding: 15px 0;
+    position: absolute; /* Position on top of hero section */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: none; /* Remove shadow */
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: #fff;
+}
+
+.nav-links {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav-links a {
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    color: #fff;
+}
+
+/* --- Hero Section --- */
+.hero-section {
+    position: relative;
+    height: 85vh; /* Adjust height */
+    width: 100%;
+    background: url('https://images.pexels.com/photos/29547310/pexels-photo-29547310/free-photo-of-serene-beach-view-at-puri-odisha.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    padding: 0 20px;
+}
+
+.hero-section::before { /* Dark overlay for text contrast */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+}
+
+.hero-content h1 {
+    font-size: 3.2em; /* Adjust size */
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+/* Add style for the second line if needed */
+.hero-content .subtitle {
+     font-size: 2em;
+     font-weight: 500;
+     margin-bottom: 20px;
+     color: #eee;
+     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.hero-content p {
+    font-size: 1.1em;
+    margin-bottom: 30px;
+    color: #eee;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Enhanced Search Bar */
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 650px; /* Wider search */
+    margin: 0 auto;
+}
+
+.search-box input[type="text"] {
+    width: 100%;
+    padding: 18px 60px 18px 25px; /* Adjust padding */
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1em;
+    background-color: rgba(255, 255, 255, 0.9); /* Slightly opaque */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    color: #333;
+    transition: background-color 0.3s ease;
+}
+.search-box input[type="text"]::placeholder {
+    color: #777;
+}
+.search-box input[type="text"]:focus {
+    outline: none;
+    background-color: #fff;
+}
+
+.search-box button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #007bff; /* Button color */
+    border: none;
+    border-radius: 50%;
+    width: 48px; /* Size */
+    height: 48px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+.search-box button:hover {
+    background-color: #0056b3;
+}
+.search-box button img {
+    width: 20px; /* Adjust icon size */
+    height: 20px;
+    filter: invert(1); /* Make icon white */
+}
+
+/* --- Quick Stats Section --- */
+.quick-stats {
+    background: #e8f4f8; /* Light blue background */
+    text-align: center;
+    padding: 40px 0;
+}
+
+.quick-stats h2 {
+    margin-bottom: 30px;
+    font-size: 1.8em;
+}
+
+.stats-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.stat-item {
+    flex: 1;
+    min-width: 150px;
+}
+
+.stat-item i {
+    font-size: 2.5em;
+    color: #1e88e5; /* Icon color */
+    margin-bottom: 10px;
+}
+
+.stat-item .number {
+    font-size: 2em;
+    font-weight: 700;
+    color: #0a4f6e;
+    display: block;
+}
+
+.stat-item .label {
+    font-size: 1em;
+    color: #555;
+}
+
+/* --- Beach Categories (Tabs) --- */
+.beach-categories {
+    background: #fff; /* White background for contrast */
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+}
+
+.tab-button {
+    padding: 15px 30px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #555;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.tab-button::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #007bff;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.tab-button.active {
+    color: #007bff;
+}
+
+.tab-button.active::after {
+    transform: scaleX(1);
+}
+
+.tab-content {
+    display: none; /* Hide content by default */
+    animation: tabFadeIn 0.5s ease;
+}
+
+.tab-content.active {
+    display: block; /* Show active content */
+}
+
+@keyframes tabFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Featured Beach Cards (within tabs) */
+.featured-beaches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.beach-card {
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.beach-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.beach-card-image {
+    position: relative;
+}
+
+.beach-card-image img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+.safety-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 0.8em;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.safety-badge.safe { background-color: #4CAF50; } /* Green */
+.safety-badge.caution { background-color: #FFC107; } /* Yellow */
+.safety-badge.danger { background-color: #F44336; } /* Red */
+
+.beach-card-content {
+    padding: 20px;
+}
+
+.beach-card-content h3 {
+    font-size: 1.4em;
+    margin-bottom: 10px;
+}
+
+.beach-card-content p {
+    font-size: 0.9em;
+    margin-bottom: 15px;
+    color: #666;
+}
+
+.beach-amenities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.amenity-tag {
+    background: #e0f7fa; /* Light teal */
+    color: #00796b; /* Dark teal text */
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.75em;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.weather-highlights {
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+    margin-top: 15px;
+}
+
+.weather-item {
+    text-align: center;
+    font-size: 0.85em;
+    color: #555;
+}
+
+.weather-item i {
+    font-size: 1.4em;
+    margin-bottom: 5px;
+    display: block;
+    color: #1e88e5;
+}
+
+/* --- Safety Info Section --- */
+.safety-info {
+    background: linear-gradient(135deg, #f4f7f6, #e8f4f8); /* Subtle gradient */
+}
+
+.safety-info h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2em;
+}
+
+.safety-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.safety-item {
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.safety-item i {
+    font-size: 2.5em;
+    color: #F44336; /* Red for safety focus */
+    margin-bottom: 15px;
+}
+
+.safety-item h3 {
+    font-size: 1.3em;
+    margin-bottom: 10px;
+}
+
+/* --- App Promo & Newsletter --- */
+.promo-newsletter {
+    background: #0a4f6e; /* Dark Teal/Blue background */
+    color: #fff;
+}
+
+.promo-newsletter .container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: center;
+}
+
+.app-promo, .newsletter {
+    flex: 1;
+    min-width: 300px;
+}
+
+.app-promo h2, .newsletter h2 {
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+}
+
+.app-promo p, .newsletter p {
+    color: #eee;
+    margin-bottom: 20px;
+}
+
+.app-stores img {
+    height: 45px;
+    margin-right: 10px;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 10px;
+}
+
+.newsletter-form input[type="email"] {
+    flex-grow: 1;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.newsletter-form button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.newsletter-form button:hover {
+    background-color: #0056b3;
+}
+
+/* --- Footer --- */
+.site-footer {
+    background-color: #1a252f; /* Dark background */
+    color: #adb5bd;
+    padding: 50px 0 20px 0;
+    font-size: 0.9em;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.footer-column h4 {
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.footer-column ul {
+    list-style: none;
+}
+
+.footer-column ul li {
+    margin-bottom: 10px;
+}
+
+.footer-column ul li a {
+    color: #adb5bd;
+}
+
+.footer-column ul li a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.social-media-links a {
+    color: #adb5bd;
+    font-size: 1.5em;
+    margin-right: 15px;
+    transition: color 0.3s ease;
+}
+
+.social-media-links a:hover {
+    color: #fff;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #343a40;
+}
+
+/* --- Responsive --- */
+@media (max-width: 992px) {
+    .hero-content h1 { font-size: 2.8em; }
+    .hero-content .subtitle { font-size: 1.8em; }
+    .search-box { max-width: 550px; }
+}
+
+@media (max-width: 768px) {
+    .navbar .container { flex-direction: column; gap: 10px; }
+    .nav-links { justify-content: center; flex-wrap: wrap;}
+    .hero-content h1 { font-size: 2.2em; }
+    .hero-content .subtitle { font-size: 1.5em; }
+    .hero-content p { font-size: 1em; }
+    .search-box input[type="text"] { padding: 15px 55px 15px 20px; font-size: 1em; }
+    .search-box button { width: 42px; height: 42px; }
+    .search-box button img { width: 18px; height: 18px; }
+    .stats-container { flex-direction: column; gap: 30px; }
+    .tabs { flex-wrap: wrap; }
+    .tab-button { padding: 12px 20px; font-size: 1em; }
+    .promo-newsletter .container { flex-direction: column; text-align: center; }
+    .app-stores { margin-bottom: 20px; }
+    .newsletter-form { flex-direction: column; }
+    .footer-content { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+}
+
+@media (max-width: 480px) {
+    section { padding: 40px 0; }
+    .hero-section { height: 70vh; }
+    .hero-content h1 { font-size: 1.8em; }
+    .hero-content .subtitle { font-size: 1.2em; }
+    .search-box { max-width: 95%; }
+    .quick-stats h2 { font-size: 1.5em; }
+    .stat-item i { font-size: 2em; }
+    .stat-item .number { font-size: 1.6em; }
+    .beach-categories h2 { font-size: 1.6em; }
+    .tab-button { padding: 10px 15px; font-size: 0.9em; }
+    .safety-info h2 { font-size: 1.6em; }
+    .promo-newsletter h2 { font-size: 1.5em; }
+    .footer-content { grid-template-columns: 1fr; text-align: center; }
+    .social-media-links { text-align: center; margin-top: 10px; }
+}
+
+/* Add this to your CSS for the real-time beaches section */
+.loading-indicator {
+    width: 100%;
+    text-align: center;
+    padding: 50px 0;
+    color: #555;
+}
+
+.loading-indicator i {
+    font-size: 2.5em;
+    color: #0a4f6e;
+    margin-bottom: 15px;
+}
+
+/* Enhance beach cards for real-time data */
+.beach-card {
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.beach-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Top Bar Styles */
+.main-header {
+  background-color: var(--primary-color);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main-header .logo a {
+  color: var(--text-white);
+  font-size: 1.5em;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.main-header .logo i {
+  margin-right: 10px;
+}
+
+.main-header .nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.main-header .nav-links a {
+  color: var(--text-white);
+  padding: 8px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.main-header .nav-links a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }

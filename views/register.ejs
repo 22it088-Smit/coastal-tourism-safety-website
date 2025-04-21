@@ -5,53 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/auth.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="bg-image"></div>
-    
+    <div class="bg-overlay"></div>
+
+    <!-- Optional Welcome Text on the Left -->
+    <div class="welcome-text-container">
+        <h1>Join the Wave!</h1>
+        <p>Create your account to unlock personalized beach forecasts, save favorite spots, and more.</p>
+    </div>
+
     <div class="auth-container">
         <div class="auth-header">
-            <h2>Create Account</h2>
-            <p>Join us for better beach experiences</p>
+            <h2>Create Your Account</h2>
+            <p>Start your beach adventure today</p>
         </div>
 
-        <% if (locals.error) { %>
-            <div class="error">
-                <%= error %>
+        <!-- Display General Form Errors (like DB errors) -->
+        <% if (typeof errors !== 'undefined' && errors.some(e => e.field === 'form')) { %>
+            <div class="error form-error">
+                <i class="fas fa-exclamation-triangle" style="margin-right: 5px;"></i>
+                <%= errors.find(e => e.field === 'form').message %>
             </div>
         <% } %>
 
-        <form action="/register" method="POST">
+        <form action="/register" method="POST" id="register-form" novalidate>
             <div class="form-group">
-                <label>USERNAME</label>
-                <input type="text" name="username" required 
-                       placeholder="Choose a username"
-                       class="input-field">
+                <label for="username">Username</label>
+                 <div class="input-field-container">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="username" name="username" required
+                           placeholder="Choose a username"
+                           class="input-field <%= (typeof errors !== 'undefined' && errors.some(e => e.field === 'username')) ? 'input-error' : '' %>"
+                           value="<%= typeof username !== 'undefined' ? username : '' %>">
+                </div>
+                <% if (typeof errors !== 'undefined' && errors.some(e => e.field === 'username')) { %>
+                    <div class="field-error"><%= errors.find(e => e.field === 'username').message %></div>
+                <% } %>
             </div>
 
             <div class="form-group">
-                <label>EMAIL ADDRESS</label>
-                <input type="email" name="email" required 
-                       placeholder="Enter your email"
-                       class="input-field">
-            </div>
-            
-            <div class="form-group">
-                <label>PASSWORD</label>
-                <input type="password" name="password" required 
-                       placeholder="Create a password"
-                       class="input-field">
+                <label for="email">Email Address</label>
+                 <div class="input-field-container">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" id="email" name="email" required
+                           placeholder="Enter your email"
+                           class="input-field <%= (typeof errors !== 'undefined' && errors.some(e => e.field === 'email')) ? 'input-error' : '' %>"
+                            value="<%= typeof email !== 'undefined' ? email : '' %>">
+                 </div>
+                <% if (typeof errors !== 'undefined' && errors.some(e => e.field === 'email')) { %>
+                    <div class="field-error"><%= errors.find(e => e.field === 'email').message %></div>
+                <% } %>
             </div>
 
             <div class="form-group">
-                <label>CONFIRM PASSWORD</label>
-                <input type="password" name="confirmPassword" required 
-                       placeholder="Confirm your password"
-                       class="input-field">
+                <label for="password">Password</label>
+                <div class="input-field-container">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password" required
+                           placeholder="Create a password"
+                            class="input-field <%= (typeof errors !== 'undefined' && errors.some(e => e.field === 'password')) ? 'input-error' : '' %>">
+                    <i class="fas fa-eye toggle-password"></i>
+                </div>
+                <div id="password-feedback" class="password-criteria">
+                    Password must be at least 8 characters long.
+                </div>
+                <% if (typeof errors !== 'undefined' && errors.some(e => e.field === 'password')) { %>
+                    <div class="field-error"><%= errors.find(e => e.field === 'password').message %></div>
+                <% } %>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                 <div class="input-field-container">
+                     <i class="fas fa-check-circle input-icon"></i>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required
+                           placeholder="Confirm your password"
+                            class="input-field <%= (typeof errors !== 'undefined' && errors.some(e => e.field === 'confirmPassword')) ? 'input-error' : '' %>">
+                     <i class="fas fa-eye toggle-password"></i>
+                 </div>
+                 <div id="confirmPassword-feedback" class="field-error"></div>
+                 <% if (typeof errors !== 'undefined' && errors.some(e => e.field === 'confirmPassword')) { %>
+                     <div class="field-error"><%= errors.find(e => e.field === 'confirmPassword').message %></div>
+                 <% } %>
             </div>
 
             <button type="submit" class="submit-btn">
-                Create Account
+                Create Account <i class="fas fa-user-plus" style="margin-left: 5px;"></i>
             </button>
         </form>
 
@@ -59,5 +101,82 @@
             Already have an account? <a href="/login">Sign In</a>
         </div>
     </div>
+
+    <script>
+        const form = document.getElementById('register-form');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordFeedback = document.getElementById('password-feedback');
+        const confirmPasswordFeedback = document.getElementById('confirmPassword-feedback');
+        const togglePasswordIcons = document.querySelectorAll('.toggle-password');
+
+        togglePasswordIcons.forEach(icon => {
+            icon.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        });
+
+        function validatePasswords() {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            let isValid = true;
+
+            confirmPasswordFeedback.textContent = '';
+            confirmPasswordInput.classList.remove('input-error');
+
+            if (confirmPassword.length > 0 && password !== confirmPassword) {
+                confirmPasswordFeedback.textContent = 'Passwords do not match.';
+                confirmPasswordInput.classList.add('input-error');
+                isValid = false;
+            }
+            return isValid;
+        }
+
+        function validatePasswordCriteria() {
+             const password = passwordInput.value;
+             let isValid = true;
+             let feedbackMessages = [];
+
+             passwordFeedback.innerHTML = '';
+             passwordInput.classList.remove('input-error');
+
+             if (password.length > 0) {
+                if (password.length < 8) {
+                     feedbackMessages.push('<span class="criteria-invalid">At least 8 characters long.</span>');
+                     isValid = false;
+                 } else {
+                     feedbackMessages.push('<span class="criteria-valid">At least 8 characters long.</span>');
+                 }
+
+                 passwordFeedback.innerHTML = feedbackMessages.join('<br>');
+                 if (!isValid) {
+                    passwordInput.classList.add('input-error');
+                 }
+             } else {
+                 passwordFeedback.innerHTML = 'Password must be at least 8 characters long.';
+             }
+
+             return isValid;
+        }
+
+        passwordInput.addEventListener('input', validatePasswordCriteria);
+        confirmPasswordInput.addEventListener('input', validatePasswords);
+        passwordInput.addEventListener('input', validatePasswords);
+
+        form.addEventListener('submit', function(event) {
+            const isPasswordCriteriaValid = validatePasswordCriteria();
+            const arePasswordsMatching = validatePasswords();
+
+            if (!isPasswordCriteriaValid || !arePasswordsMatching) {
+                event.preventDefault();
+                console.log('Client-side validation failed.');
+            }
+        });
+
+    </script>
 </body>
 </html>

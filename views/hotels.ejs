@@ -1,30 +1,158 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Beach Hotels</title>
+    <title>Beach Hotels in India</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-                        url('/images/beach-bg.jpg');
-            background-size: cover;
-            background-position: center;
-            min-height: 100vh;
-            color: white;
+            overflow-x: hidden;
         }
 
+        /* Hero Section with Parallax */
+        .hero-section {
+            position: relative;
+            height: 80vh;
+            width: 100%;
+            background: url('https://images.unsplash.com/photo-1493558103817-58b2924bce98?ixlib=rb-4.0.3');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-section p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 30px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 20px;
+            border-radius: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-size: 1.1em;
+            padding-left: 50px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .search-bar::placeholder {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 1.2em;
+        }
+
+        /* Animated Waves */
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('https://raw.githubusercontent.com/SochavaAG/example-mycode/master/pens/animation-css-waves/images/wave.png');
+            background-size: 1000px 100px;
+            animation: wave 10s linear infinite;
+            z-index: 1;
+        }
+
+        .wave.wave2 {
+            animation: wave2 15s linear infinite;
+            opacity: 0.5;
+            animation-delay: -5s;
+            bottom: 10px;
+        }
+
+        .wave.wave3 {
+            animation: wave 20s linear infinite;
+            opacity: 0.2;
+            animation-delay: -2s;
+            bottom: 15px;
+        }
+
+        @keyframes wave {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 1000px; }
+        }
+
+        @keyframes wave2 {
+            0% { background-position-x: 0; }
+            100% { background-position-x: -1000px; }
+        }
+
+        /* Navigation */
         .nav-links {
             position: absolute;
             top: 20px;
             right: 20px;
             display: flex;
             gap: 20px;
+            z-index: 10;
         }
 
         .nav-links a {
@@ -33,233 +161,655 @@
             padding: 8px 20px;
             border-radius: 5px;
             transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         .nav-links a:hover {
             background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 20px 20px 20px;
-        }
-
-        .search-section {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .search-box {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+        /* Filters Section */
+        .filters-section {
             padding: 20px;
-            border-radius: 15px;
-            max-width: 600px;
-            margin: 0 auto;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .search-box input {
-            width: 100%;
-            padding: 12px;
+        .filter-btn {
+            padding: 10px 20px;
             border: none;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: white;
-            font-size: 1em;
-            margin-bottom: 10px;
+            border-radius: 50px;
+            background: #f5f5f5;
+            color: #333;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
+        .filter-btn:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-btn i {
+            font-size: 1.2em;
+        }
+
+        /* Main Content */
+        .content-container {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            min-height: 60vh;
+        }
+
+        /* Hotel Cards */
         .hotels-grid {
+            flex: 2;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 20px;
             padding: 20px 0;
         }
 
         .hotel-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background: white;
             border-radius: 15px;
-            padding: 20px;
-            transition: transform 0.3s ease;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
         }
 
         .hotel-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
         }
 
         .hotel-image {
             width: 100%;
             height: 200px;
             object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            transition: all 0.5s ease;
+        }
+
+        .hotel-card:hover .hotel-image {
+            transform: scale(1.05);
+        }
+
+        .image-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hotel-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(33, 150, 243, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.8em;
+            z-index: 1;
+        }
+
+        .hotel-info {
+            padding: 20px;
         }
 
         .hotel-name {
             font-size: 1.5em;
             margin-bottom: 10px;
-        }
-
-        .hotel-info {
-            color: #ccc;
-            margin-bottom: 15px;
+            color: #333;
         }
 
         .hotel-rating {
-            color: gold;
+            color: #ffc107;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .hotel-rating span {
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .hotel-price {
+            font-weight: 600;
+            color: #2196f3;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .hotel-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            background: #f5f5f5;
+            color: #555;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.8em;
         }
 
         .book-btn {
-            background: #64b5f6;
+            width: 100%;
+            padding: 12px;
+            background: #2196f3;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 500;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .book-btn:hover {
-            background: #2196f3;
+            background: #1976d2;
         }
 
-        .error-message {
-            background: rgba(255, 87, 87, 0.2);
-            color: #ff5757;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            text-align: center;
+        /* Map Section */
+        .map-container {
+            flex: 1;
+            height: calc(100vh - 250px);
+            position: sticky;
+            top: 100px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .search-box form {
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-marker-popup {
             display: flex;
             gap: 10px;
+            max-width: 250px;
         }
 
-        .search-btn {
-            background: #64b5f6;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s ease;
+        .map-marker-image {
+            width: 100px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 5px;
         }
 
-        .search-btn:hover {
-            background: #2196f3;
+        .map-marker-info {
+            flex: 1;
         }
 
-        #hotels-list {
-            margin-top: 30px;
+        .map-marker-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 1em;
         }
 
-        .hotel-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: transform 0.3s ease;
+        .map-marker-info p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #555;
         }
 
-        .hotel-card:hover {
-            transform: translateY(-5px);
+        /* Loading Indicator */
+        .loader {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+            width: 100%;
+        }
+
+        .loader:after {
+            content: " ";
+            display: block;
+            width: 40px;
+            height: 40px;
+            margin: 8px;
+            border-radius: 50%;
+            border: 6px solid #2196f3;
+            border-color: #2196f3 transparent #2196f3 transparent;
+            animation: loader 1.2s linear infinite;
+        }
+
+        @keyframes loader {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .content-container {
+                flex-direction: column;
+            }
+
+            .map-container {
+                height: 400px;
+                position: relative;
+                top: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5em;
+            }
+
+            .hero-section p {
+                font-size: 1em;
+            }
+
+            .search-bar {
+                padding: 15px;
+                padding-left: 45px;
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                height: 60vh;
+            }
+
+            .hero-section h1 {
+                font-size: 2em;
+            }
+
+            .filters-section {
+                padding: 15px 10px;
+            }
+
+            .filter-btn {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+
+            .hotels-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="nav-links">
-        <a href="/">Home</a>
-        <a href="/login">Login</a>
-    </div>
-
-    <div class="container">
-        <div class="search-section">
-            <h1>Find Beach Hotels</h1>
-            <% if (beach) { %>
-                <h2>Hotels near <%= beach %></h2>
-            <% } %>
-            <div class="search-box">
-                <form onsubmit="searchHotels(event)">
-                    <input type="text" id="location-search" placeholder="Search for a beach location..." value="<%= beach || '' %>">
-                    <button type="submit" class="search-btn">Search</button>
-                </form>
+    <!-- Navigation Bar -->
+    <nav class="main-header transparent">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <i class="fas fa-cloud-sun"></i>
+                    Weather
+                </a>
             </div>
+            <ul class="nav-links">
+                <li><a href="/" class="active"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/beach-safety"><i class="fas fa-umbrella-beach"></i> Beach Safety</a></li>
+                <li><a href="/hotels"><i class="fas fa-hotel"></i> Hotels</a></li>
+                <% if (user) { %>
+                    <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <% } else { %>
+                    <li><a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Parallax -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>Find Your Perfect Beachside Stay in India</h1>
+            <p>Discover amazing hotels along India's beautiful coastlines</p>
         </div>
 
-        <% if (error) { %>
-            <div class="error-message">
-                <%= error %>
-            </div>
-        <% } %>
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="location-search" class="search-bar" placeholder="Search for beach locations in India (e.g., Goa, Kerala, Mumbai)...">
+            <button id="search-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: white; cursor: pointer;">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
 
+        <!-- Animated Waves -->
+        <div class="wave"></div>
+        <div class="wave wave2"></div>
+        <div class="wave wave3"></div>
+    </section>
+
+    <!-- Filter Section -->
+    <div class="filters-section">
+        <button class="filter-btn" data-filter="distance">
+            <i class="fas fa-umbrella-beach"></i>
+            Beach Distance
+        </button>
+        <button class="filter-btn" data-filter="sunset">
+            <i class="fas fa-sun"></i>
+            Sunset View
+        </button>
+        <button class="filter-btn" data-filter="dining">
+            <i class="fas fa-utensils"></i>
+            Beachfront Dining
+        </button>
+        <button class="filter-btn" data-filter="spa">
+            <i class="fas fa-spa"></i>
+            Spa & Wellness
+        </button>
+        <button class="filter-btn" data-filter="pool">
+            <i class="fas fa-swimming-pool"></i>
+            Pool
+        </button>
+        <button class="filter-btn" data-filter="rating">
+            <i class="fas fa-star"></i>
+            Rating
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-container">
+        <!-- Hotel Cards -->
         <div class="hotels-grid" id="hotels-list">
-            <% if (!lat || !lon) { %>
-                <p>Please search for a beach location to find nearby hotels.</p>
-            <% } %>
+            <div class="loader" id="loader"></div>
+            <!-- Hotels will be populated here -->
+        </div>
+
+        <!-- Map -->
+        <div class="map-container">
+            <div id="map"></div>
         </div>
     </div>
 
     <script>
-        async function searchHotels(event) {
-            event.preventDefault();
-            const query = document.getElementById('location-search').value;
+        // Initialize map
+        let map = L.map('map').setView([20.5937, 78.9629], 5); // Center of India
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Geoapify API Key
+        const apiKey = '<%= process.env.GEOAPIFY_API_KEY %>';
+        
+        // Indian beach destinations
+        const beachDestinations = [
+            { name: "Goa", lat: 15.2993, lon: 74.1240 },
+            { name: "Kovalam, Kerala", lat: 8.3987, lon: 76.9819 },
+            { name: "Varkala, Kerala", lat: 8.7378, lon: 76.7164 },
+            { name: "Puri, Odisha", lat: 19.8134, lon: 85.8312 },
+            { name: "Pondicherry", lat: 11.9416, lon: 79.8083 },
+            { name: "Andaman Islands", lat: 11.7401, lon: 92.6586 },
+            { name: "Mumbai, Maharashtra", lat: 19.0760, lon: 72.8777 },
+            { name: "Chennai, Tamil Nadu", lat: 13.0827, lon: 80.2707 }
+        ];
+        
+        // Show loading indicator
+        function showLoader() {
+            document.getElementById('loader').style.display = 'flex';
+        }
+        
+        // Hide loading indicator
+        function hideLoader() {
+            document.getElementById('loader').style.display = 'none';
+        }
+        
+        // Function to fetch hotels from Geoapify
+        async function fetchHotels(location) {
+            showLoader();
             
             try {
-                // First, get coordinates for the location
-                const geocodeResponse = await fetch(`https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(query)}&apiKey=<%= process.env.GEOAPIFY_API_KEY %>`);
-                const geocodeData = await geocodeResponse.json();
+                // If location is a string, geocode it first
+                let lat, lon;
                 
-                if (geocodeData.features && geocodeData.features.length > 0) {
-                    const location = geocodeData.features[0];
-                    const lat = location.properties.lat;
-                    const lon = location.properties.lon;
+                if (typeof location === 'string') {
+                    console.log('Searching for location:', location);
+                    const geocodeUrl = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(location + ", India")}&apiKey=${apiKey}`;
+                    console.log('Geocode URL:', geocodeUrl);
                     
-                    // Now fetch hotels using these coordinates
-                    const hotelsResponse = await fetch(`/hotels/${lat}/${lon}`);
-                    const hotels = await hotelsResponse.json();
+                    const geocodeResponse = await fetch(geocodeUrl);
+                    const geocodeData = await geocodeResponse.json();
+                    console.log('Geocode response:', geocodeData);
                     
-                    // Display hotels
-                    const hotelsList = document.getElementById('hotels-list');
-                    if (hotels.length === 0) {
-                        hotelsList.innerHTML = '<p>No hotels found in this area.</p>';
-                        return;
+                    if (geocodeData.features && geocodeData.features.length > 0) {
+                        lat = geocodeData.features[0].properties.lat;
+                        lon = geocodeData.features[0].properties.lon;
+                        console.log('Found coordinates:', lat, lon);
+                    } else {
+                        console.error('Location not found in geocoding response');
+                        throw new Error('Location not found');
                     }
-
-                    hotelsList.innerHTML = hotels.map(hotel => `
-                        <div class="hotel-card">
-                            <img src="https://maps.geoapify.com/v1/staticmap?style=osm-carto&width=400&height=200&center=lonlat:${hotel.coordinates[0]},${hotel.coordinates[1]}&zoom=15&marker=lonlat:${hotel.coordinates[0]},${hotel.coordinates[1]}&apiKey=<%= process.env.GEOAPIFY_API_KEY %>"
-                                 class="hotel-image" alt="${hotel.name}">
-                            <h3 class="hotel-name">${hotel.name}</h3>
-                            <div class="hotel-info">
-                                <p>${hotel.address}</p>
-                                <p>Distance: ${(hotel.distance / 1000).toFixed(2)} km</p>
-                            </div>
-                            <button class="book-btn" onclick="showBookingForm('${hotel._id}')">
-                                Book Now
-                            </button>
-                        </div>
-                    `).join('');
-
-                    console.log('Hotels loaded:', hotels); // Debug log
                 } else {
-                    document.getElementById('hotels-list').innerHTML = '<p>Location not found. Please try another search.</p>';
+                    // If location is an object with lat/lon
+                    lat = location.lat;
+                    lon = location.lon;
+                }
+                
+                // Fetch hotels from Geoapify Places API
+                const placesUrl = `https://api.geoapify.com/v2/places?categories=accommodation.hotel,accommodation.guest_house,accommodation.resort&filter=circle:${lon},${lat},5000&bias=proximity:${lon},${lat}&limit=20&apiKey=${apiKey}`;
+                console.log('Places API URL:', placesUrl);
+                
+                const response = await fetch(placesUrl);
+                const data = await response.json();
+                console.log('Places API response:', data);
+                
+                hideLoader();
+                
+                if (data.features && data.features.length > 0) {
+                    return data.features.map(place => {
+                        const props = place.properties;
+                        
+                        // Calculate random price based on accommodation category
+                        let basePrice = 100;
+                        if (props.categories.includes('accommodation.resort')) {
+                            basePrice = 250;
+                        } else if (props.categories.includes('accommodation.hotel')) {
+                            basePrice = 150;
+                        }
+                        
+                        // Random variance in price
+                        const priceVariance = Math.floor(Math.random() * 100);
+                        const price = basePrice + priceVariance;
+                        
+                        // Generate random rating between 3.5 and 5
+                        const rating = (3.5 + Math.random() * 1.5).toFixed(1);
+                        
+                        // Generate random tags based on amenities or categories
+                        const possibleTags = ['Ocean View', 'Beachfront', 'Family Friendly', 'Business', 'Pool', 'Restaurant', 'Bar', 'Spa', 'Fitness Center', 'Free WiFi'];
+                        const numTags = 2 + Math.floor(Math.random() * 3); // 2-4 tags
+                        const tags = [];
+                        for (let i = 0; i < numTags; i++) {
+                            const randomTag = possibleTags[Math.floor(Math.random() * possibleTags.length)];
+                            if (!tags.includes(randomTag)) {
+                                tags.push(randomTag);
+                            }
+                        }
+                        
+                        return {
+                            id: props.place_id,
+                            name: props.name || 'Beachside Hotel',
+                            address: props.formatted || props.address_line1 || props.address_line2 || '',
+                            lat: props.lat,
+                            lon: props.lon,
+                            distance: props.distance ? (props.distance / 1000).toFixed(1) : '0.5',
+                            rating: rating,
+                            price: price,
+                            currency: 'INR',
+                            tags: tags,
+                            image: `https://maps.geoapify.com/v1/staticmap?style=osm-carto&width=600&height=400&center=lonlat:${props.lon},${props.lat}&zoom=15&apiKey=${apiKey}`,
+                            categories: props.categories || []
+                        };
+                    });
+                } else {
+                    console.log('No hotels found in API response');
+                    return [];
                 }
             } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('hotels-list').innerHTML = '<p>Error searching for hotels. Please try again.</p>';
+                console.error('Error fetching hotels:', error);
+                hideLoader();
+                return [];
             }
         }
-
-        // Add loading indicator
-        function showLoading() {
-            document.getElementById('hotels-list').innerHTML = '<p>Searching for hotels...</p>';
+        
+        // Function to display hotels
+        function displayHotels(hotels) {
+            const hotelsList = document.getElementById('hotels-list');
+            
+            // Clear existing hotels and markers
+            hotelsList.innerHTML = '';
+            
+            map.eachLayer(layer => {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+            
+            console.log('Displaying hotels:', hotels);
+            
+            // If no hotels found
+            if (!hotels || hotels.length === 0) {
+                hotelsList.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 20px;">No hotels found for this location. Try another beach destination in India.</p>';
+                return;
+            }
+            
+            // Add hotels to the list and map
+            const bounds = L.latLngBounds();
+            
+            hotels.forEach(hotel => {
+                // Create hotel card
+                const hotelCard = document.createElement('div');
+                hotelCard.className = 'hotel-card';
+                hotelCard.innerHTML = `
+                    <div class="image-container">
+                        <img src="${hotel.image}" class="hotel-image" alt="${hotel.name}">
+                        <div class="hotel-tag">${hotel.distance}km from beach</div>
+                    </div>
+                    <div class="hotel-info">
+                        <h3 class="hotel-name">${hotel.name}</h3>
+                        <div class="hotel-rating">
+                            ${getStarRating(hotel.rating)}
+                            <span>(${hotel.rating})</span>
+                        </div>
+                        <div class="hotel-price">₹${hotel.price} <span>per night</span></div>
+                        <div class="hotel-tags">
+                            ${hotel.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                        <button class="book-btn">Book Now</button>
+                    </div>
+                `;
+                hotelsList.appendChild(hotelCard);
+                
+                // Add marker to map
+                if (hotel.lat && hotel.lon) {
+                    const marker = L.marker([hotel.lat, hotel.lon]).addTo(map);
+                    marker.bindPopup(`
+                        <div class="map-marker-popup">
+                            <img src="${hotel.image}" class="map-marker-image" alt="${hotel.name}">
+                            <div class="map-marker-info">
+                                <h4>${hotel.name}</h4>
+                                <p>₹${hotel.price} per night</p>
+                                <p>${hotel.rating} ★</p>
+                            </div>
+                        </div>
+                    `);
+                    
+                    bounds.extend([hotel.lat, hotel.lon]);
+                }
+            });
+            
+            // Fit map to bounds if we have markers
+            if (bounds.isValid()) {
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
         }
+        
+        // Helper function to generate star rating HTML
+        function getStarRating(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+            
+            return `
+                ${Array(fullStars).fill('<i class="fas fa-star"></i>').join('')}
+                ${halfStar ? '<i class="fas fa-star-half-alt"></i>' : ''}
+                ${Array(emptyStars).fill('<i class="far fa-star"></i>').join('')}
+            `;
+        }
+        
+        // Search functionality
+        document.getElementById('location-search').addEventListener('keypress', async (e) => {
+            if (e.key === 'Enter') {
+                const query = e.target.value;
+                console.log('Search query:', query);
+                
+                if (query.trim() !== '') {
+                    try {
+                        console.log('Fetching hotels for:', query);
+                        const hotels = await fetchHotels(query);
+                        console.log('Hotels found:', hotels.length);
+                        displayHotels(hotels);
+                    } catch (error) {
+                        console.error('Error during search:', error);
+                        document.getElementById('hotels-list').innerHTML = 
+                            '<p style="grid-column: 1/-1; text-align: center; padding: 20px;">Error searching for hotels. Please try again.</p>';
+                    }
+                }
+            }
+        });
+        
+        // Filter button functionality
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                this.classList.toggle('active');
+                // In a real application, you would apply filters here
+            });
+        });
+        
+        // Initialize with hotels from Goa
+        (async function init() {
+            try {
+                // Get hotels for Goa (a popular beach destination in India)
+                const initialDestination = beachDestinations[0]; // Goa
+                const hotels = await fetchHotels(initialDestination);
+                displayHotels(hotels);
+            } catch (error) {
+                console.error('Error initializing hotels:', error);
+            }
+        })();
+
+        // Add this to your JavaScript
+        document.getElementById('search-btn').addEventListener('click', async () => {
+            const query = document.getElementById('location-search').value;
+            console.log('Search button clicked, query:', query);
+            
+            if (query.trim() !== '') {
+                try {
+                    const hotels = await fetchHotels(query);
+                    displayHotels(hotels);
+                } catch (error) {
+                    console.error('Error during search:', error);
+                }
+            }
+        });
     </script>
 </body>
 </html>

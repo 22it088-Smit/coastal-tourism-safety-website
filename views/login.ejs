@@ -5,53 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/auth.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="bg-image"></div>
-    
-    <!-- Add welcome text on the left -->
-    <div class="welcome-text">
-        <h1>Beach Weather</h1>
-        <p>Get real-time weather updates and find the perfect beach for your next adventure.</p>
+    <div class="bg-overlay"></div>
+
+    <!-- Optional Welcome Text on the Left -->
+    <div class="welcome-text-container">
+        <h1>Your Coastal Escape Awaits</h1>
+        <p>Log in to explore real-time beach conditions, find nearby hotels, and plan your perfect getaway.</p>
     </div>
 
     <div class="auth-container">
         <div class="auth-header">
-            <h2>Welcome Back</h2>
-            <p>Sign in to access beach weather data</p>
+            <h2>Welcome Back!</h2>
+            <p>Sign in to your beach paradise</p>
         </div>
 
-        <% if (locals.error) { %>
-            <div class="error">
-                <%= error %>
+        <!-- Display General Form Errors -->
+        <% if (typeof errors !== 'undefined' && errors && errors.some(e => e.field === 'form')) { %>
+            <div class="error form-error">
+                <i class="fas fa-exclamation-triangle" style="margin-right: 5px;"></i>
+                <%= errors.find(e => e.field === 'form').message %>
+            </div>
+        <% } %>
+
+        <!-- Display Success Message (e.g., after registration) -->
+         <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+            <div class="success-message">
+                <i class="fas fa-check-circle" style="margin-right: 5px;"></i>
+                <%= successMessage %>
             </div>
         <% } %>
 
         <form action="/login" method="POST">
             <div class="form-group">
-                <label>EMAIL ADDRESS</label>
-                <input type="email" name="email" required 
-                       placeholder="Enter your email"
-                       class="input-field"
-                       style="width: 100%; padding: 15px;">
+                <!-- Updated Label and Input -->
+                <label for="identifier">Username or Email</label>
+                <div class="input-field-container">
+                     <i class="fas fa-user input-icon"></i> <!-- Changed icon -->
+                    <input type="text" id="identifier" name="identifier" required
+                           placeholder="Enter username or email"
+                           class="input-field <%= (typeof errors !== 'undefined' && errors && errors.some(e => e.field === 'identifier')) ? 'input-error' : '' %>"
+                           value="<%= typeof identifier !== 'undefined' ? identifier : '' %>"> <!-- Keep value -->
+                </div>
+                 <!-- Display Identifier Error (if any backend error specifically for it) -->
+                <% if (typeof errors !== 'undefined' && errors && errors.some(e => e.field === 'identifier')) { %>
+                    <div class="field-error"><%= errors.find(e => e.field === 'identifier').message %></div>
+                <% } %>
             </div>
-            
+
             <div class="form-group">
-                <label>PASSWORD</label>
-                <input type="password" name="password" required 
-                       placeholder="Enter your password"
-                       class="input-field"
-                       style="width: 100%; padding: 15px;">
+                <label for="password">Password</label>
+                 <div class="input-field-container">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password" required
+                           placeholder="Enter your password"
+                           class="input-field <%= (typeof errors !== 'undefined' && errors && errors.some(e => e.field === 'password')) ? 'input-error' : '' %>">
+                    <!-- Added Eye Icon -->
+                    <i class="fas fa-eye toggle-password"></i>
+                 </div>
+                  <!-- Display Password Error (if any backend error specifically for it) -->
+                 <% if (typeof errors !== 'undefined' && errors && errors.some(e => e.field === 'password')) { %>
+                     <div class="field-error"><%= errors.find(e => e.field === 'password').message %></div>
+                 <% } %>
             </div>
 
             <button type="submit" class="submit-btn">
-                Sign In
+                Sign In <i class="fas fa-arrow-right" style="margin-left: 5px;"></i>
             </button>
         </form>
 
         <div class="auth-footer">
-            Don't have an account? <a href="/register">Create Account</a>
+            Don't have an account? <a href="/register">Create one</a>
         </div>
     </div>
+
+    <!-- JavaScript for Password Toggle -->
+    <script>
+        const togglePasswordIcons = document.querySelectorAll('.toggle-password');
+
+        togglePasswordIcons.forEach(icon => {
+            icon.addEventListener('click', function() {
+                // Get the input field within the same container
+                const inputContainer = this.closest('.input-field-container');
+                if (!inputContainer) return;
+                const input = inputContainer.querySelector('input[type="password"], input[type="text"]');
+                if (!input) return;
+
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+
+                // Change the icon class
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        });
+    </script>
 </body>
 </html>

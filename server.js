@@ -12,6 +12,7 @@ import User from "./models/User.js";
 import stripe from 'stripe';
 import Hotel from "./models/Hotel.js";
 import fs from 'fs';
+import https from 'https';
 
 
 
@@ -19,7 +20,7 @@ import fs from 'fs';
 env.config();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3443;
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
@@ -27,9 +28,9 @@ console.log('Static directory:', path.join(__dirname, 'public'));
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('view engine', 'ejs');
 
-// Add session middleware after other middleware
+// Add session middleware
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: { secure: process.env.NODE_ENV === 'production' }
@@ -98,52 +99,159 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
-        
-        const user = new User({
-            username,
-            email,
-            password: hashedPassword
+    const { username, email, password, confirmPassword } = req.body;
+    let errors = []; // Array to hold different error messages
+
+    // --- Validation Checks ---
+
+    // 1. Check if passwords match
+    if (password !== confirmPassword) {
+        errors.push({ field: 'confirmPassword', message: 'Passwords do not match.' });
+    }
+
+    // 2. Check password strength/criteria (Example: Minimum 8 characters)
+    if (password.length < 8) {
+         errors.push({ field: 'password', message: 'Password must be at least 8 characters long.' });
+    }
+    // Add more criteria checks here (e.g., uppercase, number, symbol)
+    // if (!password.match(/[A-Z]/)) { errors.push({ message: 'Password must contain an uppercase letter.' }); }
+    // if (!password.match(/[0-9]/)) { errors.push({ message: 'Password must contain a number.' }); }
+    // if (!password.match(/[^A-Za-z0-9]/)) { errors.push({ message: 'Password must contain a special character.' }); }
+
+
+    // 3. Check if username or email already exists (Only if previous checks passed)
+    if (errors.length === 0) {
+        try {
+            const existingUser = await User.findOne({ $or: [{ email: email }, { username: username }] });
+
+            if (existingUser) {
+                if (existingUser.email === email) {
+                    errors.push({ field: 'email', message: 'Email already exists. Please use a different email or log in.' });
+                }
+                if (existingUser.username === username) {
+                     errors.push({ field: 'username', message: 'Username is already taken. Please choose another.' });
+                }
+            }
+        } catch (dbError) {
+            console.error("Database error during registration check:", dbError);
+            errors.push({ field: 'form', message: 'An error occurred during registration. Please try again.' });
+        }
+    }
+
+    // --- Process Registration or Show Errors ---
+
+    if (errors.length > 0) {
+        // If there are errors, re-render the registration page with errors and filled fields (except passwords)
+        console.log("Registration errors:", errors);
+        res.render('register', {
+            errors: errors, // Pass the array of errors
+            username: username, // Keep username filled
+            email: email      // Keep email filled
         });
-        
-        await user.save();
-        res.redirect('/login');
-    } catch (error) {
-        res.render('register', { error: 'Registration failed' });
+    } else {
+        // If validation passes, hash password and create user
+        try {
+            const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds = 10
+
+            const newUser = new User({
+                username,
+                email,
+                password: hashedPassword
+            });
+
+            await newUser.save();
+            console.log("User registered successfully:", newUser.username);
+            // Redirect to login page after successful registration
+            // Optional: Add a success message via flash messages or query params
+            res.redirect('/login?registered=success');
+        } catch (saveError) {
+            console.error("Error saving user:", saveError);
+            res.render('register', {
+                 errors: [{ field: 'form', message: 'Registration failed. Please try again later.' }],
+                 username: username,
+                 email: email
+            });
+        }
     }
 });
 
 app.get('/login', (req, res) => {
-    res.render('login');
+    let successMessage = null;
+    if (req.query.registered === 'success') {
+        successMessage = "Registration successful! Please log in.";
+    }
+    res.render('login', { errors: null, identifier: '', successMessage: successMessage }); // Pass empty identifier initially
 });
 
 app.post('/login', async (req, res) => {
+    const { identifier, password } = req.body; // Changed 'email' to 'identifier'
+    let errors = [];
+
+    if (!identifier || !password) {
+        errors.push({ field: 'form', message: 'Please enter both username/email and password.' });
+        return res.render('login', { errors: errors, identifier: identifier, successMessage: null });
+    }
+
     try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
-        
+        // Find user by either email or username (case-insensitive for username check)
+        const user = await User.findOne({
+            $or: [
+                { email: identifier },
+                { username: new RegExp('^' + identifier + '$', 'i') } // Case-insensitive username match
+            ]
+        });
+
         if (!user) {
-            return res.render('login', { error: 'Invalid credentials' });
+            errors.push({ field: 'form', message: 'Invalid credentials. Please check your username/email and password.' });
+            return res.render('login', { errors: errors, identifier: identifier, successMessage: null });
         }
-        
+
+        // Check password
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
-            return res.render('login', { error: 'Invalid credentials' });
+            errors.push({ field: 'form', message: 'Invalid credentials. Please check your username/email and password.' });
+            return res.render('login', { errors: errors, identifier: identifier, successMessage: null });
         }
-        
-        req.session.userId = user._id;
-        res.redirect('/');
+
+        // --- Login Successful ---
+        req.session.userId = user._id; // Store user ID in session
+        console.log(`User logged in: ${user.username} (ID: ${user._id})`);
+
+        // Regenerate session to prevent fixation attacks
+        req.session.regenerate((err) => {
+            if (err) {
+                console.error("Session regeneration error:", err);
+                 errors.push({ field: 'form', message: 'Login failed due to a server error. Please try again.' });
+                 return res.render('login', { errors: errors, identifier: identifier, successMessage: null });
+            }
+            // Store user ID again after regeneration
+            req.session.userId = user._id;
+            res.redirect('/'); // Redirect to the main page
+        });
+
+
     } catch (error) {
-        res.render('login', { error: 'Login failed' });
+        console.error("Login error:", error);
+        errors.push({ field: 'form', message: 'An error occurred during login. Please try again.' });
+        res.render('login', { errors: errors, identifier: identifier, successMessage: null });
     }
 });
 
+// 
 app.get('/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/login');
+    req.session.destroy(err => {
+        if (err) {
+            return res.redirect('/');
+        }
+        res.clearCookie('connect.sid');
+        res.redirect('/login');
+    });
 });
+app.use((req, res, next) => {
+    res.locals.user = req.session.userId ? { id: req.session.userId } : null;
+    next();
+});
+
 
 app.get('/', requireAuth, (req, res) => {
     res.render('index.ejs', { error: error });
@@ -367,7 +475,50 @@ app.get('/check-image', (req, res) => {
     }
 });
 
-// Server Start
-app.listen(port, () => {
-    console.log(`🌐 Listening on http://localhost:${port}`);
+// Add this middleware to set user in locals
+app.use((req, res, next) => {
+    res.locals.user = req.session.userId ? { id: req.session.userId } : null;
+    next();
+});
+
+// Production vs Development certificate handling
+let options;
+if (process.env.NODE_ENV === 'production') {
+  // In production, use Let's Encrypt or other CA certificates
+  options = {
+    key: fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/fullchain.pem')
+  };
+} else {
+  // In development, use self-signed certificates
+  options = {
+    key: fs.readFileSync(path.join(__dirname, 'certificates', 'key.pem')),
+    cert: fs.readFileSync(path.join(__dirname, 'certificates', 'cert.pem'))
+  };
+}
+// Beach Safety route
+app.get('/safety', requireAuth, (req, res) => {
+    res.render('safety', { 
+        user: req.session.userId ? { id: req.session.userId } : null,
+        weather: weather_data
+    });
+});
+
+// Create HTTPS server
+const server = https.createServer(options, app);
+
+// Server start
+server.listen(port, () => {
+  console.log(`🔒 Secure server listening on https://localhost:${port}`);
+});
+
+// Optional: Redirect HTTP to HTTPS
+import http from 'http';
+const httpPort = 3000;
+
+http.createServer((req, res) => {
+  res.writeHead(301, { "Location": `https://localhost:${port}${req.url}` });
+  res.end();
+}).listen(httpPort, () => {
+  console.log(`🔄 HTTP server redirecting from http://localhost:${httpPort} to HTTPS`);
 });

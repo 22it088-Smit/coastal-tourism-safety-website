@@ -1,0 +1,1745 @@
+<!-- views/beach-safety.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beach Safety Guide | Weather</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #00BFA5;
+            --secondary-color: #1DE9B6;
+            --accent-color: #64FFDA;
+            --danger-color: #FF5252;
+            --warning-color: #FFC107;
+            --info-color: #2196F3;
+            --success-color: #4CAF50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.85);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header and Navigation */
+        .main-header {
+            background-color: rgba(0, 191, 165, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color 0.3s ease;
+        }
+
+        .main-header.transparent {
+            background-color: rgba(0, 191, 165, 0.6);
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo a {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin-left: 5px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a i {
+            margin-right: 8px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease;
+        }
+
+        .page-header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Safety Cards */
+        .safety-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .safety-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 0.5s ease;
+            animation-fill-mode: both;
+        }
+
+        .safety-card:nth-child(1) { animation-delay: 0.1s; }
+        .safety-card:nth-child(2) { animation-delay: 0.2s; }
+        .safety-card:nth-child(3) { animation-delay: 0.3s; }
+        .safety-card:nth-child(4) { animation-delay: 0.4s; }
+        .safety-card:nth-child(5) { animation-delay: 0.5s; }
+
+        .safety-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .safety-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .safety-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .safety-card p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .safety-card .btn {
+            display: inline-block;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .safety-card .btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Tabs */
+        .tab-container {
+            margin-bottom: 40px;
+        }
+
+        .tabs {
+            display: flex;
+            width: 100%;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            background-color: rgba(0, 191, 165, 0.1);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from { 
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Sections */
+        .section {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section h2 i {
+            margin-right: 10px;
+        }
+
+        .section h3 {
+            color: #444;
+            margin: 15px 0 10px;
+            font-size: 1.3rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-box {
+            background-color: rgba(249, 249, 249, 0.9);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .info-box.blue {
+            background-color: rgba(227, 242, 253, 0.9);
+        }
+
+        .info-box.orange {
+            background-color: rgba(255, 243, 224, 0.9);
+        }
+
+        .info-box.red {
+            background-color: rgba(255, 235, 238, 0.9);
+        }
+
+        .info-box.green {
+            background-color: rgba(232, 245, 233, 0.9);
+        }
+
+        .info-item {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .info-item i {
+            color: var(--info-color);
+            margin-right: 10px;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .info-item.warning i {
+            color: var(--warning-color);
+        }
+
+        .info-item.danger i {
+            color: var(--danger-color);
+        }
+
+        .info-item.success i {
+            color: var(--success-color);
+        }
+
+        .alert {
+            background-color: rgba(248, 215, 218, 0.9);
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .alert i {
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+
+        .alert.info {
+            background-color: rgba(227, 242, 253, 0.9);
+            color: #0c5460;
+        }
+
+        .flag-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .flag {
+            width: 50px;
+            height: 30px;
+            margin-right: 15px;
+            border-radius: 4px;
+        }
+
+        .flag-info {
+            flex: 1;
+        }
+
+        .flag-info p {
+            margin: 0;
+        }
+
+        .flag-info .title {
+            font-weight: 600;
+        }
+
+        .flag-info .desc {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .uv-index {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .uv-level {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .uv-info {
+            flex: 1;
+        }
+
+        .uv-info .title {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .uv-info .desc {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .dos-donts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .dos-donts {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .do-box, .dont-box {
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .do-box {
+            background-color: rgba(232, 245, 233, 0.9);
+        }
+
+        .dont-box {
+            background-color: rgba(255, 235, 238, 0.9);
+        }
+
+        .do-item, .dont-item {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .do-item i {
+            color: var(--success-color);
+            margin-right: 10px;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .dont-item i {
+            color: var(--danger-color);
+            margin-right: 10px;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: #444;
+            margin: 0 0 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-title i {
+            margin-right: 10px;
+        }
+
+        .card-desc {
+            color: #666;
+            margin: 0;
+        }
+
+        .card-content ul {
+            padding-left: 20px;
+        }
+
+        .card-content h4 {
+            color: #444;
+            margin: 15px 0 10px;
+        }
+
+        .download-section {
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .download-section h3 {
+            color: #444;
+            margin-bottom: 15px;
+        }
+
+        .download-section p {
+            color: #666;
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #00a896;
+        }
+
+        /* Timeline Styles - Updated */
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: var(--primary-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 10px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -13px;
+            background-color: white;
+            border: 4px solid var(--primary-color);
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .timeline-left {
+            left: 0;
+        }
+
+        .timeline-right {
+            left: 50%;
+        }
+
+        .timeline-left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid #fff;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent white;
+        }
+
+        .timeline-right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid #fff;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent white transparent transparent;
+        }
+
+        .timeline-right::after {
+            left: -12px;
+        }
+
+        .timeline-content {
+            padding: 20px 30px;
+            background-color: white;
+            position: relative;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-content h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        /* Emergency Guide Styles - Updated */
+        .emergency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .emergency-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 0.5s ease;
+            animation-fill-mode: both;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .emergency-card:nth-child(1) { animation-delay: 0.1s; }
+        .emergency-card:nth-child(2) { animation-delay: 0.2s; }
+        .emergency-card:nth-child(3) { animation-delay: 0.3s; }
+        .emergency-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .emergency-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .emergency-card .icon {
+            font-size: 2rem;
+            color: var(--danger-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .emergency-card .icon i {
+            margin-right: 10px;
+        }
+
+        .emergency-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .emergency-card ul {
+            padding-left: 20px;
+            flex-grow: 1;
+        }
+
+        .emergency-card .emergency-contact {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .emergency-contact p {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+
+        .emergency-contact i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        /* Accordion */
+        .accordion {
+            margin-bottom: 20px;
+        }
+
+        .accordion-item {
+            margin-bottom: 10px;
+        }
+
+        .accordion-header {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .accordion-header i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .accordion-header:hover {
+            background-color: #e9e9e9;
+        }
+
+        .accordion-header::after {
+            content: '\f078';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            margin-left: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-header.active::after {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 15px;
+        }
+
+        .accordion-content p {
+            padding: 15px 0;
+        }
+
+        /* Footer */
+        .main-footer {
+            background-color: rgba(51, 51, 51, 0.9);
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #444;
+            padding-top: 20px;
+            text-align: center;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-nav {
+                flex-direction: column;
+                padding: 10px;
+            }
+            
+            .logo {
+                margin-bottom: 10px;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: space-around;
+                flex-wrap: wrap;
+            }
+            
+            .nav-links li {
+                margin: 5px;
+            }
+            
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .timeline-right {
+                left: 0%;
+            }
+            
+            .timeline-left::before, .timeline-right::before {
+                left: 60px;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            
+            .timeline-left::after, .timeline-right::after {
+                left: 18px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .safety-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links a {
+                padding: 8px 10px;
+                font-size: 0.9rem;
+            }
+            
+            .nav-links a i {
+                margin-right: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Icons -->
+    <header class="main-header transparent">
+        <nav class="main-nav">
+            <div class="logo">
+                <a href="/">
+                    <i class="fas fa-cloud-sun"></i>
+                    Weather 
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/beach-safety" class="active"><i class="fas fa-umbrella-beach"></i> Beach Safety</a></li>
+                <li><a href="/hotels"><i class="fas fa-hotel"></i> Hotels</a></li>
+                <% if (locals.user) { %>
+                    <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <% } else { %>
+                    <li><a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                    <li><a href="/register"><i class="fas fa-user-plus"></i> Register</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="page-header animate__animated animate__fadeIn">
+            <h1>Beach Safety Guide</h1>
+            <p>Enjoy your time at the beach while staying safe with our comprehensive guide to beach hazards, safety tips, and emergency procedures.</p>
+        </div>
+
+        <!-- Safety Overview Cards -->
+        <div class="safety-cards">
+            <div class="safety-card animate__animated animate__fadeInUp">
+                <div class="icon" style="color: #FF5252;">
+                    <i class="fas fa-water"></i>
+                </div>
+                <h3>Rip Currents</h3>
+                <p>Learn how to spot and escape dangerous rip currents.</p>
+                <a href="#rip-currents" class="btn" onclick="activateTab('awareness')">Learn More →</a>
+            </div>
+
+            <div class="safety-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                <div class="icon" style="color: #FFA726;">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <h3>Sun Protection</h3>
+                <p>Protect your skin from harmful UV rays with sunscreen and shade.</p>
+                <a href="#sun-protection" class="btn" onclick="activateTab('awareness')">UV Index Info →</a>
+            </div>
+
+            <div class="safety-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+                <div class="icon" style="color: #EF5350;">
+                    <i class="fas fa-flag"></i>
+                </div>
+                <h3>Flag Warnings</h3>
+                <p>Understand the meaning of different beach warning flags.</p>
+                <a href="#flag-warnings" class="btn" onclick="activateTab('awareness')">Flag System Guide →</a>
+            </div>
+
+            <div class="safety-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+                <div class="icon" style="color: #42A5F5;">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>Safety Timeline</h3>
+                <p>What to do before, during, and after your beach visit.</p>
+                <a href="#safety-timeline" class="btn" onclick="activateTab('timeline')">View Timeline →</a>
+            </div>
+
+            <div class="safety-card animate__animated animate__fadeInUp" style="animation-delay: 0.5s;">
+                <div class="icon" style="color: #F44336;">
+                    <i class="fas fa-first-aid"></i>
+                </div>
+                <h3>Emergency Guide</h3>
+                <p>Know what to do in beach emergencies and how to respond.</p>
+                
+                <a href="#emergency-guide" class="btn" onclick="activateTab('emergency')">Emergency Info →</a>
+            </div>
+        </div>
+
+        <!-- Main Content Tabs -->
+        <div class="tab-container">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="awareness">Safety Awareness</button>
+                <button class="tab-btn" data-tab="dos-donts">Do's & Don'ts</button>
+                <button class="tab-btn" data-tab="timeline">Safety Timeline</button>
+                <button class="tab-btn" data-tab="emergency">Emergency Guide</button>
+            </div>
+
+            <!-- Safety Awareness Tab -->
+            <div id="awareness" class="tab-content active">
+                <div class="section" id="rip-currents">
+                    <h2><i class="fas fa-water"></i> Rip Current Safety</h2>
+
+                    <div class="info-grid">
+                        <div>
+                            <h3>How to Identify Rip Currents:</h3>
+                            <ul>
+                                <li>A channel of churning, choppy water</li>
+                                <li>An area with a noticeable difference in water color</li>
+                                <li>A line of foam, seaweed, or debris moving steadily seaward</li>
+                                <li>A break in the incoming wave pattern</li>
+                            </ul>
+
+                            <h3>If Caught in a Rip Current:</h3>
+                            <ul>
+                                <li>Stay calm and don't fight the current</li>
+                                <li>Swim parallel to the shore until you escape the current</li>
+                                <li>Once free, turn and swim toward shore</li>
+                                <li>If you can't escape, float or tread water and call for help</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-box blue">
+                            <h3>Rip Current Facts</h3>
+
+                            <div class="info-item">
+                                <i class="fas fa-info-circle"></i>
+                                <p>Rip currents can travel at speeds up to 8 feet per second—faster than an Olympic swimmer.</p>
+                            </div>
+
+                            <div class="info-item">
+                                <i class="fas fa-info-circle"></i>
+                                <p>Rip currents account for over 80% of beach rescues performed by lifeguards.</p>
+                            </div>
+
+                            <div class="info-item warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <p>Never swim alone and always stay in sight of a lifeguard tower.</p>
+                            </div>
+
+                            <div class="alert">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div>
+                
+                                    <strong>Emergency Response</strong>
+                                    <p>If you see someone in trouble, get help from a lifeguard. If a lifeguard is not available, call 911 and throw the victim something that floats.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section" id="sun-protection">
+                    <h2><i class="fas fa-sun"></i> Sun Protection</h2>
+
+                    <div class="info-grid">
+                        <div>
+                            <h3>Sunscreen Guidelines:</h3>
+                            <ul>
+                                <li>Use broad-spectrum SPF 30+ sunscreen</li>
+                                <li>Apply 15-30 minutes before sun exposure</li>
+                                <li>Reapply every 2 hours and after swimming</li>
+                                <li>Don't forget often-missed areas: ears, feet, back of neck</li>
+                            </ul>
+
+                            <h3>Additional Protection:</h3>
+                            <ul>
+                                <li>Wear a wide-brimmed hat and UV-blocking sunglasses</li>
+                                <li>Use beach umbrellas or tents for shade</li>
+                                <li>Wear UV-protective clothing when possible</li>
+                                <li>Limit exposure during peak hours (10am-4pm)</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-box orange">
+                            <h3>UV Index Guide</h3>
+
+                            <div class="uv-index" style="background-color: #E8F5E9;">
+                                <div class="uv-level" style="background-color: #4CAF50;">1-2</div>
+                                <div class="uv-info">
+                                    <p class="title">Low</p>
+                                    <p class="desc">Minimal protection needed for normal activity</p>
+                                </div>
+                            </div>
+
+                            <div class="uv-index" style="background-color: #FFF9C4;">
+                                <div class="uv-level" style="background-color: #FFC107;">3-5</div>
+                                <div class="uv-info">
+                                    <p class="title">Moderate</p>
+                                    <p class="desc">Take precautions - wear sunscreen and protective clothing</p>
+                                </div>
+                            </div>
+
+                            <div class="uv-index" style="background-color: #FFE0B2;">
+                                <div class="uv-level" style="background-color: #FF9800;">6-7</div>
+                                <div class="uv-info">
+                                    <p class="title">High</p>
+                                    <p class="desc">Protection required - minimize sun exposure between 10am-4pm</p>
+                                </div>
+                            </div>
+
+                            <div class="uv-index" style="background-color: #FFCDD2;">
+                                <div class="uv-level" style="background-color: #F44336;">8-10</div>
+                                <div class="uv-info">
+                                    <p class="title">Very High</p>
+                                    <p class="desc">Extra protection needed - minimize outdoor activities</p>
+                                </div>
+                            </div>
+
+                            <div class="uv-index" style="background-color: #E1BEE7;">
+                                <div class="uv-level" style="background-color: #9C27B0;">11+</div>
+                                <div class="uv-info">
+                                    <p class="title">Extreme</p>
+                                    <p class="desc">Take all precautions - unprotected skin can burn in minutes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section" id="flag-warnings">
+                    <h2><i class="fas fa-flag"></i> Beach Flag Warning System</h2>
+
+                    <div class="info-grid">
+                        <div>
+                            <h3>Standard Flag Colors:</h3>
+
+                            <div class="flag-container">
+                                <div class="flag" style="background-color: #4CAF50;"></div>
+                                <div class="flag-info">
+                                    <p class="title">Green Flag</p>
+                                    <p class="desc">Low hazard - calm conditions, exercise caution</p>
+                                </div>
+                            </div>
+
+                            <div class="flag-container">
+                                <div class="flag" style="background-color: #FFC107;"></div>
+                                <div class="flag-info">
+                                    <p class="title">Yellow Flag</p>
+                                    <p class="desc">Medium hazard - moderate surf and/or currents</p>
+                                </div>
+                            </div>
+
+                            <div class="flag-container">
+                                <div class="flag" style="background-color: #F44336;"></div>
+                                <div class="flag-info">
+                                    <p class="title">Red Flag</p>
+                                    <p class="desc">High hazard - high surf and/or strong currents</p>
+                                </div>
+                            </div>
+
+                            <div class="flag-container">
+                                <div style="display: flex; margin-right: 15px;">
+                                    <div class="flag" style="background-color: #F44336; margin-right: 2px;"></div>
+                                    <div class="flag" style="background-color: #F44336;"></div>
+                                </div>
+                                <div class="flag-info">
+                                    <p class="title">Double Red Flags</p>
+                                    <p class="desc">Water closed to public</p>
+                                </div>
+                            </div>
+
+                            <div class="flag-container">
+                                <div class="flag" style="background-color: #9C27B0;"></div>
+                                <div class="flag-info">
+                                    <p class="title">Purple Flag</p>
+                                    <p class="desc">Dangerous marine life (jellyfish, sharks, etc.)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-box" style="background-color: #F5F5F5;">
+                            <h3>Additional Beach Warnings</h3>
+
+                            <div class="accordion">
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <i class="fas fa-tint"></i> Water Quality Alerts
+                                    </div>
+                                    <div class="accordion-content">
+                                        <p>Some beaches post notices about water quality issues. These may indicate high bacteria levels or other contaminants that make swimming unsafe. Always check for these notices before entering the water.</p>
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <i class="fas fa-fish"></i> Marine Life Warnings
+                                    </div>
+                                    <div class="accordion-content">
+                                        <p>Specific warnings may be posted about jellyfish, stingrays, sharks, or other potentially dangerous marine life in the area. Follow all guidance from lifeguards regarding these hazards.</p>
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <i class="fas fa-thermometer-half"></i> Weather Advisories
+                                    </div>
+                                    <div class="accordion-content">
+                                        <p>Lightning, high winds, and extreme heat can all pose dangers at the beach. Pay attention to weather forecasts and be prepared to seek shelter if conditions change rapidly.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert info">
+                                <i class="fas fa-info-circle"></i>
+                                <div>
+                                    <strong>Always Check Current Conditions</strong>
+                                    <p>Flag systems may vary slightly between locations. Always check with local lifeguards about the specific meaning of flags at your beach.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2><i class="fas fa-exclamation-triangle"></i> Additional Beach Hazards</h2>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                        <div class="card animate__animated animate__fadeInUp">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-water"></i> Dangerous Shorebreaks
+                                </h3>
+                            </div>
+                            <div class="card-content">
+                                <p>Powerful waves breaking directly on the shore can cause neck and spinal injuries. Never dive into waves, and always enter the water feet first.</p>
+                            </div>
+                        </div>
+
+                        <div class="card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-anchor"></i> Submerged Objects
+                                </h3>
+                            </div>
+                            <div class="card-content">
+                                <p>Rocks, reefs, and debris can be hidden underwater. Walk carefully when entering the water and be aware of your surroundings.</p>
+                            </div>
+                        </div>
+
+                        <div class="card animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-map-marker-alt"></i> Getting Lost
+                                </h3>
+                            </div>
+                            <div class="card-content">
+                                <p>Beaches can look similar in all directions. Note landmarks near your spot and consider using a beach locator app or taking a photo of your location.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Do's and Don'ts Tab -->
+            <div id="dos-donts" class="tab-content">
+                <div class="section">
+                    <h2>Beach Safety: Do's and Don'ts</h2>
+
+                    <div class="dos-donts">
+                        <div class="do-box animate__animated animate__fadeInLeft">
+                            <h3><i class="fas fa-check-circle"></i> Beach Safety Do's</h3>
+
+                            <div class="do-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <p><strong>Swim near a lifeguard</strong></p>
+                                    <p class="desc">Always swim in designated areas supervised by lifeguards.</p>
+                                </div>
+                            </div>
+
+                            <div class="do-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <p><strong>Check conditions before entering</strong></p>
+                                    <p class="desc">Look at flags, signs, and ask lifeguards about current hazards.</p>
+                                </div>
+                            </div>
+
+                            <div class="do-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <p><strong>Stay hydrated</strong></p>
+                                    <p class="desc">Drink plenty of water, even if you don't feel thirsty.</p>
+                                </div>
+                            </div>
+
+                            <div class="do-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <p><strong>Use the buddy system</strong></p>
+                                    <p class="desc">Never swim alone, even if you're an experienced swimmer.</p>
+                                </div>
+                            </div>
+
+                            <div class="do-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <p><strong>Protect your belongings</strong></p>
+                                    <p class="desc">Keep valuables secure and consider waterproof containers.</p>
+                                </div>
+                            </div>
+
+                            <div class="do-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <p><strong>Learn basic water rescue</strong></p>
+                                    <p class="desc">Know how to recognize and respond to water emergencies.</p>
+                                </div>
+                            </div>
+
+                            <div class="do-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <p><strong>Respect marine life</strong></p>
+                                    <p class="desc">Observe wildlife from a distance and never touch or feed marine animals.</p>
+                                </div>
+                            </div>
+
+                            <div class="do-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <p><strong>Know your limits</strong></p>
+                                    <p class="desc">Be honest about your swimming ability and stay within your comfort zone.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dont-box animate__animated animate__fadeInRight">
+                            <h3><i class="fas fa-times-circle"></i> Beach Safety Don'ts</h3>
+
+                            <div class="dont-item">
+                                <i class="fas fa-times-circle"></i>
+                                <div>
+                                    <p><strong>Don't swim against rip currents</strong></p>
+                                    <p class="desc">Swim parallel to shore to escape, then toward the beach.</p>
+                                </div>
+                            </div>
+
+                            <div class="dont-item">
+                                <i class="fas fa-times-circle"></i>
+                                <div>
+                                    <p><strong>Don't dive into unknown waters</strong></p>
+                                    <p class="desc">Hidden objects and shallow areas can cause serious injuries.</p>
+                                </div>
+                            </div>
+
+                            <div class="dont-item">
+                                <i class="fas fa-times-circle"></i>
+                                <div>
+                                    <p><strong>Don't leave children unattended</strong></p>
+                                    <p class="desc">Always keep children within arm's reach near water.</p>
+                                </div>
+                            </div>
+
+                            <div class="dont-item">
+                                <i class="fas fa-times-circle"></i>
+                                <div>
+                                    <p><strong>Don't swim under the influence</strong></p>
+                                    <p class="desc">Alcohol and drugs impair judgment and swimming ability.</p>
+                                </div>
+                            </div>
+
+                            <div class="dont-item">
+                                <i class="fas fa-times-circle"></i>
+                                <div>
+                                    <p><strong>Don't ignore warning flags</strong></p>
+                                    <p class="desc">They're there for your safety—respect the warnings.</p>
+                                </div>
+                            </div>
+
+                            <div class="dont-item">
+                                <i class="fas fa-times-circle"></i>
+                                <div>
+                                    <p><strong>Don't swim during storms</strong></p>
+                                    <p class="desc">Lightning, high winds, and rough surf are extremely dangerous.</p>
+                                </div>
+                            </div>
+
+                            <div class="dont-item">
+                                <i class="fas fa-times-circle"></i>
+                                <div>
+                                    <p><strong>Don't rely on flotation devices</strong></p>
+                                    <p class="desc">Inflatables and toys are not safety devices and can drift away.</p>
+                                </div>
+                            </div>
+
+                            <div class="dont-item">
+                                <i class="fas fa-times-circle"></i>
+                                <div>
+                                    <p><strong>Don't leave trash behind</strong></p>
+                                    <p class="desc">Keep beaches clean for everyone's safety and enjoyment.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Safety Timeline Tab -->
+            <div id="timeline" class="tab-content">
+                <div class="section" id="safety-timeline">
+                    <h2><i class="fas fa-clock"></i> Beach Safety Timeline</h2>
+                    <p class="mb-4">Follow this timeline to ensure a safe and enjoyable beach experience from preparation to return.</p>
+
+                    <div class="timeline">
+                        <div class="timeline-item timeline-left">
+                            <div class="timeline-content">
+                                <h3>Before You Go</h3>
+                                <ul>
+                                    <li>Check weather and tide forecasts</li>
+                                    <li>Research the beach (facilities, lifeguards, known hazards)</li>
+                                    <li>Pack essentials: water, sunscreen, first aid kit</li>
+                                    <li>Learn about local marine life and hazards</li>
+                                    <li>Charge your phone and save emergency numbers</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item timeline-right">
+                            <div class="timeline-content">
+                                <h3>Upon Arrival</h3>
+                                <ul>
+                                    <li>Note the location of lifeguard stations</li>
+                                    <li>Check flag warnings and beach conditions</li>
+                                    <li>Set up near a lifeguard station</li>
+                                    <li>Apply sunscreen 15-30 minutes before sun exposure</li>
+                                    <li>Identify emergency exits and meeting points</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item timeline-left">
+                            <div class="timeline-content">
+                                <h3>During Your Visit</h3>
+                                <ul>
+                                    <li>Reapply sunscreen every 2 hours and after swimming</li>
+                                    <li>Stay hydrated and take shade breaks</li>
+                                    <li>Check flag warnings throughout the day</li>
+                                    <li>Keep an eye on changing weather conditions</li>
+                                    <li>Use the buddy system when swimming</li>
+                                    <li>Watch children at all times</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item timeline-right">
+                            <div class="timeline-content">
+                                <h3>Before Swimming</h3>
+                                <ul>
+                                    <li>Observe water conditions for at least 5 minutes</li>
+                                    <li>Look for signs of rip currents or dangerous shorebreaks</li>
+                                    <li>Check for submerged objects or sudden drop-offs</li>
+                                    <li>Enter water feet first, never dive into unknown depths</li>
+                                    <li>Ensure lifeguards can see you</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item timeline-left">
+                            <div class="timeline-content">
+                                <h3>After Swimming</h3>
+                                <ul>
+                                    <li>Rinse off salt water and sand</li>
+                                    <li>Check for any unusual skin reactions</li>
+                                    <li>Rehydrate and replace electrolytes</li>
+                                    <li>Reapply sunscreen if continuing beach activities</li>
+                                    <li>Check for any marine life stings or injuries</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item timeline-right">
+                            <div class="timeline-content">
+                                <h3>Before Leaving</h3>
+                                <ul>
+                                    <li>Account for all belongings and trash</li>
+                                    <li>Check for signs of sunburn or heat exhaustion</li>
+                                    <li>Ensure everyone in your group is accounted for</li>
+                                    <li>Fill in any holes dug in the sand (safety hazard)</li>
+                                    <li>Check the tide schedule if you parked near the shoreline</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item timeline-left">
+                            <div class="timeline-content">
+                                <h3>After Your Visit</h3>
+                                <ul>
+                                    <li>Monitor for delayed sunburn or skin reactions</li>
+                                    <li>Clean and dry all beach equipment</li>
+                                    <li>Report any hazards or incidents to beach authorities</li>
+                                    <li>Check for ticks or other parasites</li>
+                                    <li>Share your beach safety knowledge with others</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Guide Tab -->
+            <div id="emergency" class="tab-content">
+                <div class="section" id="emergency-guide">
+                    <h2><i class="fas fa-first-aid"></i> Beach Emergency Guide</h2>
+                    <p class="mb-4">Know how to respond to common beach emergencies and when to seek professional help.</p>
+
+                    <div class="emergency-grid">
+                        <div class="emergency-card">
+                            <div class="icon">
+                                <i class="fas fa-water"></i>
+                                <h3>Drowning Response</h3>
+                            </div>
+                            <ul>
+                                <li>Alert a lifeguard immediately</li>
+                                <li>If no lifeguard is present, call 911</li>
+                                <li>Throw a flotation device if possible</li>
+                                <li>Do not attempt a rescue unless you're trained</li>
+                                <li>If the person is rescued, check breathing and pulse</li>
+                                <li>Begin CPR if necessary and you are trained</li>
+                                <li>Continue until help arrives</li>
+                            </ul>
+                            <div class="emergency-contact">
+                                <p><i class="fas fa-phone"></i> Emergency: 911</p>
+                                <p><i class="fas fa-info-circle"></i> Remember: Your safety comes first</p>
+                            </div>
+                        </div>
+
+                        <div class="emergency-card">
+                            <div class="icon">
+                                <i class="fas fa-fish"></i>
+                                <h3>Marine Life Injuries</h3>
+                            </div>
+                            <ul>
+                                <li><strong>Jellyfish:</strong> Rinse with vinegar, not fresh water</li>
+                                <li><strong>Stingray:</strong> Soak wound in hot water (as hot as can be tolerated)</li>
+                                <li><strong>Sea urchin:</strong> Remove visible spines and seek medical attention</li>
+                                <li><strong>Shark bite:</strong> Apply direct pressure to control bleeding and call 911</li>
+                                <li>Watch for signs of allergic reaction (difficulty breathing, swelling)</li>
+                                <li>Seek medical help for any serious reactions</li>
+                            </ul>
+                            <div class="emergency-contact">
+                                <p><i class="fas fa-phone"></i> Poison Control: 1-800-222-1222</p>
+                            </div>
+                        </div>
+
+                        <div class="emergency-card">
+                            <div class="icon">
+                                <i class="fas fa-sun"></i>
+                                <h3>Heat-Related Emergencies</h3>
+                            </div>
+                            <ul>
+                                <li><strong>Heat Exhaustion:</strong> Move to shade, cool with water, hydrate</li>
+                                <li><strong>Heat Stroke:</strong> Medical emergency - call 911</li>
+                                <li>Symptoms: Confusion, high body temperature, hot/dry skin</li>
+                                <li>Cool the person rapidly (ice packs to groin, armpits, neck)</li>
+                                <li><strong>Severe Sunburn:</strong> Cool compresses, aloe vera, pain relievers</li>
+                                <li>Seek medical attention for blistering or fever</li>
+                            </ul>
+                            <div class="emergency-contact">
+                                <p><i class="fas fa-thermometer-half"></i> Watch for: Dizziness, nausea, headache</p>
+                            </div>
+                        </div>
+
+                        <div class="emergency-card">
+                            <div class="icon">
+                                <i class="fas fa-briefcase-medical"></i>
+                                <h3>Beach First Aid Kit</h3>
+                            </div>
+                            <ul>
+                                <li>Waterproof bandages and antiseptic</li>
+                                <li>Vinegar (for jellyfish stings)</li>
+                                <li>Tweezers (for splinters or sea urchin spines)</li>
+                                <li>Emergency contact information</li>
+                                <li>Hydrocortisone cream for minor skin irritations</li>
+                                <li>Aloe vera gel for sunburn</li>
+                                <li>Instant cold packs</li>
+                                <li>Electrolyte packets</li>
+                                <li>Emergency whistle</li>
+                                <li>CPR face shield</li>
+                            </ul>
+                            <div class="emergency-contact">
+                                <p><i class="fas fa-exclamation-circle"></i> Replace expired items regularly</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert info mt-4">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Local Emergency Information</strong>
+                            <p>Before visiting a beach, save the local emergency numbers and know the exact address or location of the beach you're visiting to provide to emergency services if needed.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="download-section animate__animated animate__fadeIn">
+            <h3>Stay Informed, Stay Safe</h3>
+            <p>Beach conditions can change rapidly. Always check current conditions and follow guidance from lifeguards and local authorities.</p>
+            <button class="btn-primary">Download Beach Safety Guide</button>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Weather App</h3>
+                    <p>Your comprehensive beach weather and safety guide.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="/beach-safety"><i class="fas fa-umbrella-beach"></i> Beach Safety</a></li>
+                        <li><a href="/hotels"><i class="fas fa-hotel"></i> Hotels</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-envelope"></i> Email: info@weatherapp.com</p>
+                    <p><i class="fas fa-phone"></i> Phone: (123) 456-7890</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <%= new Date().getFullYear() %> Weather App. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const header = document.querySelector('.main-header');
+
+            // Make header more transparent on scroll
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    header.classList.remove('transparent');
+                } else {
+                    header.classList.add('transparent');
+                }
+            });
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    activateTab(tabId);
+                });
+            });
+
+            // Accordion functionality
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    header.classList.toggle('active');
+                    const content = header.nextElementSibling;
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+
+            // Check if URL has a hash and scroll to that section
+            if (window.location.hash) {
+                const sectionId = window.location.hash.substring(1);
+                scrollToSection(sectionId);
+                
+                // Activate appropriate tab based on section
+                if (sectionId === 'safety-timeline') {
+                    activateTab('timeline');
+                } else if (sectionId === 'emergency-guide') {
+                    activateTab('emergency');
+                } else if (sectionId.includes('rip-currents') || sectionId.includes('sun-protection') || sectionId.includes('flag-warnings')) {
+                    activateTab('awareness');
+                }
+            }
+
+            // Add animation to elements when they come into view
+            const animateOnScroll = () => {
+                const elements = document.querySelectorAll('.card, .emergency-card, .timeline-item');
+                
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.3;
+                    
+                    if (elementPosition < screenPosition) {
+                        if (element.classList.contains('timeline-item')) {
+                            element.style.opacity = '1';
+                        } else {
+                            element.classList.add('animate__animated');
+                            element.classList.add('animate__fadeInUp');
+                        }
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', animateOnScroll);
+            // Initial check for elements in view
+            animateOnScroll();
+        });
+
+        function activateTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Deactivate all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Activate the selected tab
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+        }
+
+        // Handle anchor links
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>

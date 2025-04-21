@@ -3,93 +3,306 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Weather</title>
-
-    <!-- Bootstrap -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
-
-    <!-- Custom Css  -->
-    <link rel="stylesheet" href="/css/style.css" />
-
-    <style>
-      /* Your existing styles */
-      .nav-links {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        display: flex;
-        gap: 20px;
-      }
-
-      .nav-links a {
-        color: white;
-        text-decoration: none;
-        padding: 8px 20px;
-        border-radius: 5px;
-        transition: all 0.3s ease;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      }
-
-      .nav-links a:hover {
-        background: rgba(255, 255, 255, 0.2);
-      }
-    </style>
+    <title>Beach Weather & Safety</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="/css/style.css">
   </head>
   <body>
-    <div class="nav-links">
-      <a href="/login">Login</a>
-      <a href="/hotels">Hotel</a>
-    </div>
-
-    <section id="hero" class="container-fluid px-4">
-      <div id="navbar">
-        <div class="nav-logo">
-          <span>Weather</span>
+    <!-- Navigation Bar -->
+    <nav class="main-header transparent">
+      <div class="container">
+        <div class="logo">
+          <a href="/">
+            <i class="fas fa-cloud-sun"></i>
+            Weather
+          </a>
         </div>
-       
+        <ul class="nav-links">
+          <li><a href="/" class="active"><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="/beach-safety"><i class="fas fa-umbrella-beach"></i> Beach Safety</a></li>
+          <li><a href="/hotels"><i class="fas fa-hotel"></i> Hotels</a></li>
+          <% if (user) { %>
+            <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          <% } else { %>
+            <li><a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+          <% } %>
+        </ul>
       </div>
-      <div id="hero-text">
-        <h1>
-          "Smart Beaches, Safer Adventures!"
-          <br />
-          <span id="animate-text">"Stay Informed, Stay Safe"</span>
-        </h1>
-        <h3>
-          Providing real time beach data to ensure your safety and <br />
-          convinience
-        </h3>
+    </nav>
 
+    <!-- Hero Section -->
+    <header class="hero-section">
+      <div class="hero-content">
+        <h1>"Smart Beaches, Safer Adventures!"</h1>
+        <p class="subtitle">EUPHORIC!</p>
+        <p>Providing real-time beach data to ensure your safety and convenience</p>
+        <!-- Enhanced Search Bar -->
+        <div class="search-box">
         <form action="/find" method="post">
-          <input type="text" name="place" placeholder="Enter Your Beach Name" />
-          <button type="submit">
-            <img src="/assets/pics/search.png" alt="Search" />
+            <input type="text" name="place" placeholder="Enter Your Beach Name or City..." required>
+            <button type="submit" aria-label="Search">
+              <img src="/public/assets/pics/search.png" alt="Search Icon"> 
           </button>
         </form>
-        <h3 class="error"> <%= error %></h3>
+        </div>
       </div>
-      <div id="credits">
-        
+    </header>
+
+    <!-- Quick Stats Section -->
+    <section class="quick-stats">
+      <div class="container">
+        <!-- <h2>Why Choose Euphoric?</h2> -->
+        <div class="stats-container">
+          <div class="stat-item">
+            <i class="fas fa-umbrella-beach"></i>
+            <span class="number">150+</span>
+            <span class="label">Beaches Monitored</span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-water"></i>
+            <span class="number">Real-Time</span>
+            <span class="label">Water Conditions</span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-bell"></i>
+            <span class="number">Instant</span>
+            <span class="label">Safety Alerts</span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-life-ring"></i>
+            <span class="number">Expert</span>
+            <span class="label">Safety Tips</span>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- Bootstrap JS  -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-      integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-      crossorigin="anonymous"
-    ></script>
+    <!-- Real-time Beach Weather Section -->
+    <section class="beach-categories">
+      <div class="container">
+        <h2 style="text-align: center; margin-bottom: 30px; font-size: 2em;">Real-Time Beach Weather</h2>
+        
+        <!-- Dynamic Content - We'll load this via JavaScript -->
+        <div id="real-time-beaches" class="featured-beaches-grid">
+          <!-- Loading placeholder -->
+          <div class="loading-indicator">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading real-time beach data...</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <!-- custom JS  -->
-    <script src="/js/index.js"></script>
+    <!-- Safety Information Section -->
+    <section class="safety-info" id="safety">
+      <div class="container">
+        <h2>Stay Safe at the Beach</h2>
+        <div class="safety-grid">
+          <div class="safety-item">
+            <i class="fas fa-water"></i>
+            <h3>Rip Currents</h3>
+            <p>Learn how to spot and escape dangerous rip currents.</p>
+            <a href="/safety">Learn More &rarr;</a>
+          </div>
+          <div class="safety-item">
+            <i class="fas fa-sun"></i>
+            <h3>Sun Protection</h3>
+            <p>Protect your skin from harmful UV rays with sunscreen and shade.</p>
+            <a href="/safety">UV Index Info &rarr;</a>
+          </div>
+          <div class="safety-item">
+            <i class="fas fa-flag"></i>
+            <h3>Flag Warnings</h3>
+            <p>Understand the meaning of different beach warning flags.</p>
+            <a href="/safety">Flag System Guide &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-column">
+            <h4>About Euphoric</h4>
+            <p>Providing real-time beach safety information to ensure you have safe and enjoyable coastal adventures.</p>
+          </div>
+          <div class="footer-column">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/hotels">Find Hotels</a></li>
+              <li><a href="/safety">Safety Tips</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>Explore Regions</h4>
+            <ul>
+              <li><a href="#">Goa Beaches</a></li>
+              <li><a href="#">Kerala Coastline</a></li>
+              <li><a href="#">Andaman Islands</a></li>
+              <li><a href="#">East Coast Gems</a></li>
+              <!-- Add more regional links -->
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>Connect With Us</h4>
+            <p>Follow us for the latest updates and alerts:</p>
+            <div class="social-media-links">
+              <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+              <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          &copy; <%= new Date().getFullYear() %> Euphoric Beach Weather. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript for real-time beach data -->
+    <script>
+      // Popular beach locations in India
+      const beachLocations = [
+        { name: "Calangute Beach", region: "Goa", coords: [15.5493, 73.7527] },
+        { name: "Kovalam Beach", region: "Kerala", coords: [8.3988, 76.9782] },
+        { name: "Puri Beach", region: "Odisha", coords: [19.8133, 85.8314] },
+        { name: "Marina Beach", region: "Chennai", coords: [13.0500, 80.2824] },
+        { name: "Radhanagar Beach", region: "Andaman", coords: [11.9810, 92.9550] },
+        { name: "Varkala Beach", region: "Kerala", coords: [8.7378, 76.7164] }
+      ];
+
+      // Function to fetch weather data for a beach
+      async function fetchBeachWeather(lat, lon, name, region) {
+        try {
+          // Simulate API fetch (in real-world app, you would make a proper AJAX request to your server)
+          // For example: const response = await fetch(`/api/beach-weather?lat=${lat}&lon=${lon}`);
+          
+          // Random temperature, wind, and wave height for demo
+          const temp = Math.floor(Math.random() * 6) + 26; // 26-32°C
+          const wind = Math.floor(Math.random() * 15) + 5; // 5-20 km/h
+          const waves = (Math.random() * 1.5 + 0.3).toFixed(1); // 0.3-1.8m
+          
+          // Random safety status
+          const safetyStatus = ["safe", "caution", "danger"][Math.floor(Math.random() * 3)];
+          const safetyIcon = {
+            "safe": "fa-check-circle",
+            "caution": "fa-exclamation-triangle",
+            "danger": "fa-times-circle"
+          };
+          
+          // Random amenities (2-3 per beach)
+          const allAmenities = [
+            {icon: "fa-chair", label: "Sunbeds"},
+            {icon: "fa-utensils", label: "Restaurants"},
+            {icon: "fa-life-ring", label: "Lifeguards"},
+            {icon: "fa-shower", label: "Showers"},
+            {icon: "fa-store", label: "Shops"},
+            {icon: "fa-parking", label: "Parking"},
+            {icon: "fa-toilet", label: "Restrooms"}
+          ];
+          
+          // Shuffle and take 2-3 amenities
+          const shuffled = [...allAmenities].sort(() => 0.5 - Math.random());
+          const amenities = shuffled.slice(0, Math.floor(Math.random() * 2) + 2);
+          
+          return {
+            name,
+            region,
+            description: `Beautiful ${name} with pristine waters and sandy shores.`,
+            temp,
+            wind,
+            waves,
+            safety: {
+              status: safetyStatus,
+              icon: safetyIcon[safetyStatus]
+            },
+            amenities,
+            coords: [lat, lon]
+          };
+        } catch (error) {
+          console.error("Error fetching beach data:", error);
+          return null;
+        }
+      }
+
+      // Function to generate beach card HTML
+      function generateBeachCard(beach) {
+        const amenitiesHTML = beach.amenities.map(a => 
+          `<span class="amenity-tag"><i class="fas ${a.icon}"></i> ${a.label}</span>`
+        ).join('');
+        
+        return `
+          <div class="beach-card">
+            <div class="beach-card-image">
+              <img src="https://source.unsplash.com/400x300/?beach,${beach.name.replace(' ', '')}" alt="${beach.name}">
+              <div class="safety-badge ${beach.safety.status}"><i class="fas ${beach.safety.icon}"></i> ${beach.safety.status.charAt(0).toUpperCase() + beach.safety.status.slice(1)}</div>
+            </div>
+            <div class="beach-card-content">
+              <h3>${beach.name}, ${beach.region}</h3>
+              <p>${beach.description}</p>
+              <div class="beach-amenities">
+                ${amenitiesHTML}
+              </div>
+              <div class="weather-highlights">
+                <div class="weather-item"><i class="fas fa-thermometer-half"></i> ${beach.temp}°C</div>
+                <div class="weather-item"><i class="fas fa-wind"></i> ${beach.wind} km/h</div>
+                <div class="weather-item"><i class="fas fa-water"></i> ${beach.waves}m Waves</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Load beach data
+      async function loadBeachData() {
+        const container = document.getElementById('real-time-beaches');
+        
+        // Show loading
+        container.innerHTML = `
+          <div class="loading-indicator" style="width:100%; text-align:center; padding:30px;">
+            <i class="fas fa-spinner fa-spin" style="font-size:2em; color:#0a4f6e; margin-bottom:15px;"></i>
+            <p>Loading real-time beach data...</p>
+          </div>
+        `;
+        
+        try {
+          // Fetch data for all beaches
+          const beachDataPromises = beachLocations.map(beach => 
+            fetchBeachWeather(beach.coords[0], beach.coords[1], beach.name, beach.region)
+          );
+          
+          const beachesData = await Promise.all(beachDataPromises);
+          
+          // Generate HTML
+          const beachCardsHTML = beachesData
+            .filter(beach => beach !== null)
+            .map(beach => generateBeachCard(beach))
+            .join('');
+          
+          // Update container
+          container.innerHTML = beachCardsHTML;
+        } catch (error) {
+          console.error("Error loading beach data:", error);
+          container.innerHTML = `
+            <div class="error-message" style="width:100%; text-align:center; padding:30px;">
+              <i class="fas fa-exclamation-circle" style="font-size:2em; color:#F44336; margin-bottom:15px;"></i>
+              <p>Unable to load beach data. Please try again later.</p>
+            </div>
+          `;
+        }
+      }
+
+      // Load beach data when page loads
+      document.addEventListener('DOMContentLoaded', loadBeachData);
+    </script>
   </body>
 </html>
