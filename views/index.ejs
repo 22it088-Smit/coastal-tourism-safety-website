@@ -45,7 +45,7 @@
         <form action="/find" method="post">
             <input type="text" name="place" placeholder="Enter Your Beach Name or City..." required>
             <button type="submit" aria-label="Search">
-              <img src="/public/assets/pics/search.png" alt="Search Icon"> 
+              <img src="/assets/pics/search.png" alt="Search Icon"> 
           </button>
         </form>
         </div>
@@ -172,16 +172,46 @@
     <script>
       // Popular beach locations in India
       const beachLocations = [
-        { name: "Calangute Beach", region: "Goa", coords: [15.5493, 73.7527] },
-        { name: "Kovalam Beach", region: "Kerala", coords: [8.3988, 76.9782] },
-        { name: "Puri Beach", region: "Odisha", coords: [19.8133, 85.8314] },
-        { name: "Marina Beach", region: "Chennai", coords: [13.0500, 80.2824] },
-        { name: "Radhanagar Beach", region: "Andaman", coords: [11.9810, 92.9550] },
-        { name: "Varkala Beach", region: "Kerala", coords: [8.7378, 76.7164] }
+        { 
+          name: "Calangute Beach", 
+          region: "Goa", 
+          coords: [15.5493, 73.7527], 
+          image: "/images/calangute-beach.jpg"
+        },
+        { 
+          name: "Kovalam Beach", 
+          region: "Kerala", 
+          coords: [8.3988, 76.9782], 
+          image: "/images/kovalam-beach.jpg" 
+        },
+        { 
+          name: "Puri Beach", 
+          region: "Odisha", 
+          coords: [19.8133, 85.8314], 
+          image: "/images/puri-beach.jpg" 
+        },
+        { 
+          name: "Marina Beach", 
+          region: "Chennai", 
+          coords: [13.0500, 80.2824], 
+          image: "/images/marina-beach.jpg" 
+        },
+        { 
+          name: "Radhanagar Beach", 
+          region: "Andaman", 
+          coords: [11.9810, 92.9550], 
+          image: "/images/radhanagar-beach.jpg" 
+        },
+        { 
+          name: "Varkala Beach", 
+          region: "Kerala", 
+          coords: [8.7378, 76.7164], 
+          image: "/images/varkala-beach.jpg" 
+        }
       ];
 
       // Function to fetch weather data for a beach
-      async function fetchBeachWeather(lat, lon, name, region) {
+      async function fetchBeachWeather(lat, lon, name, region, image) {
         try {
           // Simulate API fetch (in real-world app, you would make a proper AJAX request to your server)
           // For example: const response = await fetch(`/api/beach-weather?lat=${lat}&lon=${lon}`);
@@ -226,7 +256,8 @@
               icon: safetyIcon[safetyStatus]
             },
             amenities,
-            coords: [lat, lon]
+            coords: [lat, lon],
+            image: image
           };
         } catch (error) {
           console.error("Error fetching beach data:", error);
@@ -243,8 +274,16 @@
         return `
           <div class="beach-card">
             <div class="beach-card-image">
-              <img src="https://source.unsplash.com/400x300/?beach,${beach.name.replace(' ', '')}" alt="${beach.name}">
-              <div class="safety-badge ${beach.safety.status}"><i class="fas ${beach.safety.icon}"></i> ${beach.safety.status.charAt(0).toUpperCase() + beach.safety.status.slice(1)}</div>
+              <img 
+                src="${beach.image}" 
+                alt="${beach.name}"
+                onerror="this.onerror=null; this.src='/images/default-beach.jpg'; console.log('Failed to load image for ${beach.name}');"
+                loading="lazy"
+              >
+              <div class="safety-badge ${beach.safety.status}">
+                <i class="fas ${beach.safety.icon}"></i> 
+                ${beach.safety.status.charAt(0).toUpperCase() + beach.safety.status.slice(1)}
+              </div>
             </div>
             <div class="beach-card-content">
               <h3>${beach.name}, ${beach.region}</h3>
@@ -277,7 +316,7 @@
         try {
           // Fetch data for all beaches
           const beachDataPromises = beachLocations.map(beach => 
-            fetchBeachWeather(beach.coords[0], beach.coords[1], beach.name, beach.region)
+            fetchBeachWeather(beach.coords[0], beach.coords[1], beach.name, beach.region, beach.image)
           );
           
           const beachesData = await Promise.all(beachDataPromises);
@@ -303,6 +342,18 @@
 
       // Load beach data when page loads
       document.addEventListener('DOMContentLoaded', loadBeachData);
+    </script>
+
+    <script>
+      // Handle navigation bar scroll effect
+      window.addEventListener('scroll', function() {
+        const header = document.querySelector('.main-header');
+        if (window.scrollY > 50) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      });
     </script>
   </body>
 </html>

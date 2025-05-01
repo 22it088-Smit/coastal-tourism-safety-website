@@ -257,6 +257,119 @@ app.get('/', requireAuth, (req, res) => {
     res.render('index.ejs', { error: error });
 });
 
+// Function to generate beach visit description
+function generateBeachVisitDescription(weatherData) {
+    let isVisitable = true;
+    let reasons = [];
+    let recommendations = [];
+    let alertLevel = "Safe";
+    let alertColor = "green";
+
+    // Check wave height conditions
+    const waveHeight = parseFloat(weatherData.ocean.wave);
+    if (waveHeight >= 0.0 && waveHeight <= 0.3) {
+        reasons.push("Wave conditions are very calm and ideal for swimming");
+        alertLevel = "Ideal to Visit";
+        alertColor = "#007759";
+    } else if (waveHeight > 0.3 && waveHeight <= 0.5) {
+        reasons.push("Wave conditions are safe for most swimmers");
+        alertLevel = "Safe to Visit";
+        alertColor = "green";
+    } else if (waveHeight > 0.5 && waveHeight <= 1.2) {
+        reasons.push("Moderate wave conditions - exercise caution");
+        recommendations.push("Stay within your depth and be aware of changing conditions");
+        alertLevel = "Be Cautious";
+        alertColor = "yellow";
+    } else if (waveHeight > 1.2 && waveHeight <= 2.0) {
+        reasons.push("High wave conditions - not recommended for casual swimmers");
+        recommendations.push("Only experienced swimmers should enter the water");
+        isVisitable = false;
+        alertLevel = "Not Recommended";
+        alertColor = "orange";
+    } else if (waveHeight > 2.0) {
+        reasons.push("Dangerous wave conditions");
+        recommendations.push("Swimming is not advised");
+        isVisitable = false;
+        alertLevel = "Dangerous";
+        alertColor = "red";
+    }
+
+    // Check AQI conditions
+    const aqi = parseInt(weatherData.aqi.aqi);
+    if (aqi <= 50) {
+        reasons.push("Air quality is good");
+    } else if (aqi <= 100) {
+        reasons.push("Air quality is moderate");
+        recommendations.push("Sensitive individuals should limit prolonged outdoor exposure");
+    } else if (aqi > 100) {
+        reasons.push("Poor air quality conditions");
+        recommendations.push("Consider limiting outdoor activities");
+        isVisitable = false;
+    }
+
+    // Check UV Index
+    const uvi = parseFloat(weatherData.uvi);
+    if (uvi >= 8) {
+        reasons.push("Very high UV levels");
+        recommendations.push("Use strong sunscreen, wear protective clothing, and limit sun exposure between 10 AM and 4 PM");
+    } else if (uvi >= 6) {
+        reasons.push("High UV levels");
+        recommendations.push("Use sunscreen and seek shade during peak hours");
+    } else if (uvi >= 3) {
+        reasons.push("Moderate UV levels");
+        recommendations.push("Use sunscreen");
+    }
+
+    // Check temperature
+    const temp = parseFloat(weatherData.temp);
+    if (temp > 35) {
+        reasons.push("Very high temperature");
+        recommendations.push("Stay hydrated and avoid prolonged sun exposure");
+    } else if (temp < 20) {
+        reasons.push("Cool temperature for swimming");
+        recommendations.push("Water activities may be uncomfortable without proper gear");
+    }
+
+    // Check visibility
+    const visibility = parseFloat(weatherData.visibility);
+    if (visibility < 5) {
+        reasons.push("Low visibility conditions");
+        recommendations.push("Extra caution required for water activities");
+    }
+
+    // Check wind speed
+    const windSpeed = parseFloat(weatherData.wind_speed);
+    if (windSpeed > 20) {
+        reasons.push("Strong winds present");
+        recommendations.push("Be cautious of strong currents and high waves");
+        isVisitable = false;
+    } else if (windSpeed > 10) {
+        reasons.push("Moderate wind conditions");
+        recommendations.push("Be aware of wind-generated waves and currents");
+    }
+
+    // Check rain probability
+    const rain = parseFloat(weatherData.rain);
+    if (rain > 50) {
+        reasons.push("High chance of rain");
+        recommendations.push("Check weather updates and bring rain protection");
+    }
+
+    // Generate final description
+    let description = `Beach Visit Status: ${isVisitable ? 'Recommended' : 'Not Recommended'}\n\n`;
+    description += "Conditions:\n- " + reasons.join("\n- ") + "\n\n";
+    if (recommendations.length > 0) {
+        description += "Recommendations:\n- " + recommendations.join("\n- ");
+    }
+
+    return {
+        description,
+        isVisitable,
+        alertLevel,
+        alertColor
+    };
+}
+
 app.post('/find', requireAuth, async (req, res) => {
     place = req.body['place'];
 
@@ -270,17 +383,24 @@ app.post('/find', requireAuth, async (req, res) => {
         console.log("Location Error:", err);
         return res.redirect('/');
     }
-await weather_owm(lat, lon, weather_data);
-await tomorrow_weather(lat, lon, weather_data);
-await aqi_test(lat, lon, weather_data);
-await marine(lat, lon, weather_data);
 
+    await weather_owm(lat, lon, weather_data);
+    await tomorrow_weather(lat, lon, weather_data);
+    await aqi_test(lat, lon, weather_data);
+    await marine(lat, lon, weather_data);
 
     if (weather_data.ocean.wave === 'nullm') {
         error = `The given city does not have a beach.`;
         res.redirect("/");
     } else {
         try {
+            // Generate beach description
+            const beachVisitInfo = generateBeachVisitDescription(weather_data);
+            weather_data.beach_desc = beachVisitInfo.description;
+            weather_data.isBeachVisitable = beachVisitInfo.isVisitable;
+            weather_data.alertLevel = beachVisitInfo.alertLevel;
+            weather_data.alertColor = beachVisitInfo.alertColor;
+
             const newBeach = new Beach({
                 ...weather_data,
                 lat,
@@ -291,7 +411,13 @@ await marine(lat, lon, weather_data);
         } catch (err) {
             console.log("❌ Error saving to MongoDB:", err);
         }
-        res.render('map.ejs', { weather: weather_data, lat: lat, lon: lon, place: place });
+        res.render('map.ejs', { 
+            weather: weather_data, 
+            lat: lat, 
+            lon: lon, 
+            place: place,
+            user: req.session.userId ? { id: req.session.userId } : null
+        });
     }
 });
 
@@ -302,47 +428,26 @@ app.get('/hotels', async (req, res) => {
             lat: null, 
             lon: null, 
             beach: null,
-            error: null
+            error: null,
+            user: req.session.userId ? { id: req.session.userId } : null
         });
     } catch (error) {
         console.error(error);
-        res.status(500).render('hotels', { error: 'Failed to load hotels' });
+        res.status(500).render('hotels', { 
+            error: 'Failed to load hotels',
+            user: req.session.userId ? { id: req.session.userId } : null
+        });
     }
 });
 
+// Get hotels for a specific location
 app.get('/hotels/:lat/:lon', async (req, res) => {
     try {
         const { lat, lon } = req.params;
+        console.log(`Searching for hotels near lat: ${lat}, lon: ${lon}`);
         
-        console.log(`Searching for hotels near lat: ${lat}, lon: ${lon}`); // Debug log
-
-        const response = await axios.get('https://api.geoapify.com/v2/places', {
-            params: {
-                categories: 'accommodation.hotel,accommodation.motel',
-                filter: `circle:${lon},${lat},5000`, // 5km radius
-                bias: `proximity:${lon},${lat}`,
-                limit: 20,
-                apiKey: process.env.GEOAPIFY_API_KEY
-            }
-        });
-
-        console.log('API Response:', response.data); // Debug log
-
-        if (!response.data.features) {
-            console.log('No features in response');
-            return res.json([]);
-        }
-
-        const hotels = response.data.features.map(place => ({
-            name: place.properties.name || 'Unnamed Location',
-            address: place.properties.formatted || 'No address available',
-            distance: place.properties.distance || 0,
-            coordinates: [place.properties.lon, place.properties.lat],
-            _id: place.properties.place_id // Using place_id as _id
-        }));
-
-        console.log(`Found ${hotels.length} hotels`); // Debug log
-        res.json(hotels);
+        // We'll use the static data from the frontend
+        res.json({ success: true });
     } catch (error) {
         console.error('Error fetching hotels:', error);
         res.status(500).json({ error: 'Failed to fetch hotels', details: error.message });
@@ -424,7 +529,7 @@ app.post('/hotel/:id/book', requireAuth, async (req, res) => {
     }
 });
 
-// Add this route to handle hotels near a specific beach
+// Get hotels near a specific beach
 app.get('/hotels/:lat/:lon/:beach', async (req, res) => {
     try {
         const { lat, lon, beach } = req.params;
@@ -432,11 +537,15 @@ app.get('/hotels/:lat/:lon/:beach', async (req, res) => {
             lat, 
             lon, 
             beach: decodeURIComponent(beach),
-            error: null 
+            error: null,
+            user: req.session.userId ? { id: req.session.userId } : null
         });
     } catch (error) {
         console.error(error);
-        res.status(500).render('hotels', { error: 'Failed to load hotels' });
+        res.status(500).render('hotels', { 
+            error: 'Failed to load hotels',
+            user: req.session.userId ? { id: req.session.userId } : null
+        });
     }
 });
 
@@ -497,7 +606,7 @@ if (process.env.NODE_ENV === 'production') {
   };
 }
 // Beach Safety route
-app.get('/safety', requireAuth, (req, res) => {
+app.get('/beach-safety', requireAuth, (req, res) => {
     res.render('safety', { 
         user: req.session.userId ? { id: req.session.userId } : null,
         weather: weather_data

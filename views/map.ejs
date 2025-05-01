@@ -71,7 +71,7 @@
 
         <div class="data alert">
           <p>ALERT</p>
-          <h3>data</h3>
+          <h3 style="background-color: <%= weather.alertColor %>"><%= weather.alertLevel %></h3>
         </div>
 
         <div class="data aqi">
@@ -111,8 +111,10 @@
         </div>
 
         <div class="data desc">
-          <p>Desc</p>
-          <h3></h3>
+          <p>Beach Visit Information</p>
+          <div style="white-space: pre-line; font-size: 0.9em; color: #333;">
+            <%= weather.beach_desc %>
+          </div>
         </div>
 
         <% } else { %>
